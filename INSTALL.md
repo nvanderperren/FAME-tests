@@ -42,9 +42,9 @@ python3 --version
 ### Virtual environment
 
 ```bash
-pip install virtualenv virtualenvwrapper
-echo "# Virtual Environment Wrapper"
-echo "VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python2" >> ~/.bash_profile
+pip3 install virtualenv virtualenvwrapper
+echo "# Virtual Environment Wrapper" >> ~/.bash_profile
+echo "VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3" >> ~/.bash_profile
 echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bash_profile
 source ~/.bash_profile
 ```
