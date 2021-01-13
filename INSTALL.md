@@ -130,7 +130,7 @@ pip install umap-learn[plot]
 Activate the virtual environment: `workon FAME`
 
 ```bash
-pip install dhbscan
+pip install hdbscan
 ```
 
 ## other
