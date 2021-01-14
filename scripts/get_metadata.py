@@ -49,7 +49,7 @@ def list_files(dirs):
 def list_people():
     image_paths_productions = list_files(dirs_productions)
     image_paths_portrets = list_files(dirs_portrets)
-    csv_rows = [["path, name"]]
+    csv_rows = [["path", "name"]]
     names = []
 
     for image_path in image_paths_productions:
@@ -91,7 +91,7 @@ def list_people():
     csvfile.close()
     print("[INFO]: csv stored in ../data/filenames.csv")
 
-
-print("[INFO] creation file names csv started")
-list_people()
-print("[INFO] creation file names csv ended")
+def create_metadata():
+    print("[INFO] creation file names csv started")
+    list_people()
+    print("[INFO] creation file names csv ended")
