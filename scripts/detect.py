@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import csv
+import scripts.helper as write_csv
 
 # import some common detectron2 utilities
 import detectron2
@@ -181,20 +182,13 @@ def detecting_faces():
     
     print("[INFO] Total faces found: " + str(len(found_faces_info)-1))
     print("Faces found and saved to drive")
-    write_csv(found_faces_info)
+
 
 # Save faces as seperate images
 def save_image(image, filepath):
     opencvImage = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     plt.imsave(filepath,opencvImage)
     return filepath
-
-# Save information in CSV
-def write_csv(lines):
-    with open("../data/found-faces.csv", 'w') as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerows(lines)
-    csv_file.close()
 
 def detect_and_crop():
     print("[INFO] start detecting faces")

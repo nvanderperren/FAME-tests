@@ -2,3 +2,5 @@
 Images/
 data/
 meemoo_gezichtsherkenning_(summary_code).py
+__pycache__
+*test.*
