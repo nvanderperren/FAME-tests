@@ -30,26 +30,19 @@ def resize_image(image):
     resized = cv2.resize(gray, dim, interpolation=cv2.INTER_AREA)
     return resized
 
+def get_face_location(data):
+    data = data.lstrip('(').rstrip(')')
+    data = data.split(',')
+    face_location = (int(data[0]), int(data[1]),
+                                  int(data[2]), int(data[3]))
+    return face_location
+
 
 def get_face(image_path, face_location):
     image = cv2.imread(image_path)
-    face_location = face_location.lstrip('(').rstrip(')')
-    face_location = face_location.split(',')
-    (top, right, bottom, left) = (int(face_location[0]), int(face_location[1]),
-                                  int(face_location[2]), int(face_location[3]))
+    (top, right, bottom, left) = face_location
     cropped_image = image[top:bottom, left:right]
     return cropped_image
-
-
-def encode(image_path, face_location, line):
-    cropped_image = get_face(image_path, face_location)
-    encoding = utils.img_to_encodings(cropped_image)
-    if len(encoding) > 0:
-        resized_image = resize_image(cropped_image)
-        face_encoding = embeddable_image(resized_image)
-        line.append(encoding)
-        line.append(face_encoding)
-    return line
 
 
 def encoding_faces():
@@ -63,22 +56,26 @@ def encoding_faces():
             print("- encode file nr. " + str(index+1))
             image_path = row['path']
             person = row['name']
-            face_location = row['face_location']
+            face_location_data = row['face_location']
+            face_location = get_face_location(face_location_data)
             cropped_image = row['crop']
-            line = [image_path, person, face_location, cropped_image]
-            line = encode(image_path, face_location, line)
-            lines.append(line)
-    
+            cropped_image_data = get_face(image_path, face_location)
+            encoding = utils.img_to_encodings(cropped_image_data)
+            if len(encoding) > 0:
+                resized_image = resize_image(cropped_image_data)
+                face_encoding = embeddable_image(resized_image)
+                data = [{"path": image_path, "name": person, "face_location": face_location, "crop": cropped_image, 
+                "face_encoding": encoding[0], "image": face_encoding}]
+                lines.extend(data)   
     return lines
 
 def write_data(filename,data):
     f = open(filename + '.pickle', 'wb')
     f.write(pickle.dumps(data))
     f.close()
+    data = pd.DataFrame(data)
     data.to_csv(filename + '.csv', index=False)
 
 data = encoding_faces()
 print("[INFO] serializing encodings...")
-data = pd.DataFrame(data,columns=["path", "name", "face_location",
-              "crop", "face_encoding", "image_encoding"])
 write_data("../data/face_encoding", data)
