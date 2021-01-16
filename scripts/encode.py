@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # imports face encoding
 from pyfacy import utils
 from PIL import Image
@@ -48,13 +51,13 @@ def get_face(image_path, face_location):
 def encoding_faces():
     lines = []
     # better work with pickle files, then we don't need to modify the face string
-    with open("../data/found-faces.csv") as csv_file:
+    with open("data/found-faces.csv") as csv_file:
         reader = csv.DictReader(csv_file)
         print("[INFO] quantifying faces...")
 
         for index, row in enumerate(reader):
-            print("- encode file nr. " + str(index+1))
-            image_path = row['path']
+            print("- encode face nr. " + str(index+1))
+            image_path = row['image_path']
             person = row['name']
             face_location_data = row['face_location']
             face_location = get_face_location(face_location_data)
@@ -64,18 +67,20 @@ def encoding_faces():
             if len(encoding) > 0:
                 resized_image = resize_image(cropped_image_data)
                 face_encoding = embeddable_image(resized_image)
-                data = [{"path": image_path, "name": person, "face_location": face_location, "crop": cropped_image, 
+                data = [{"image_path": image_path, "name": person, "face_location": face_location, "crop": cropped_image, 
                 "face_encoding": encoding[0], "image": face_encoding}]
                 lines.extend(data)   
     return lines
 
 def write_data(filename,data):
-    f = open(filename + '.pickle', 'wb')
+    f = open('data/pickle/' + filename + '.pickle', 'wb')
     f.write(pickle.dumps(data))
     f.close()
     data = pd.DataFrame(data)
-    data.to_csv(filename + '.csv', index=False)
+    data.to_csv('data/' + filename + '.csv', index=False)
 
-data = encoding_faces()
-print("[INFO] serializing encodings...")
-write_data("../data/face_encoding", data)
+def encoding():
+    print("[INFO] Step 3: Encoding faces...")
+    data = encoding_faces()
+    print("[INFO] serializing encodings...")
+    write_data('face_encoding', data)

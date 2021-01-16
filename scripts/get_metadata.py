@@ -1,32 +1,15 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # imports
 import os
 import csv
 
 # variables
-dirs_productions = []
-dirs_portrets = []
-'''
-dirs_productions.append(
-    "/Volumes/UNSTENPUNT FOTOCOLLECTIE/TEMP BACKUP ZUENA FOTO SCANS VTI 20191125/digitalisering")
-dirs_productions.append(
-    "KUNSTENPUNT FOTOCOLLECTIE/BACKUP VTi fotocollectie digital born/0_Archief")
-
-dirs_portrets.append(
-    "KUNSTENPUNT FOTOCOLLECTIE/BACKUP VTi fotocollectie digital born/3_Portretten")
-dirs_portrets.append("KUNSTENPUNT FOTOCOLLECTIE/TEMP BACKUP ZUENA FOTO SCANS VTI 20191125/digitalisering/Jerôme de Perlinghi Kunstenaarsportretten Kaaitheater 1977-1997")
-dirs_portrets.append("KUNSTENPUNT FOTOCOLLECTIE/TEMP BACKUP ZUENA FOTO SCANS VTI 20191125/digitalisering/Fotomaterial Personen")
-dirs_portrets.append(
-    "KUNSTENPUNT FOTOCOLLECTIE/BACKUP VTi fotocollectie digital born/1_TeIntegrerenInArchief/portretten")
-dirs_portrets.append("KUNSTENPUNT FOTOCOLLECTIE/BACKUP VTi fotocollectie digital born/1_TeIntegrerenInArchief/Auteursportretten_")
-'''
 portret_folder_1 = "Jerôme de Perlinghi Kunstenaarsportretten Kaaitheater 1977-1997"
 portret_folder_2 = "Fotomateriaal Personen"
 
-dirs_productions.append("../Images/Images")
-dirs_portrets.append("../Images/People/3_Portretten")
-dirs_portrets.append("../Images/People/Fotomaterial Personen")
 # functions
-
 
 def list_files(dirs):
     r = []
@@ -46,10 +29,10 @@ def list_files(dirs):
 
 
 # Method to create map of names with a list of images
-def list_people():
-    image_paths_productions = list_files(dirs_productions)
-    image_paths_portrets = list_files(dirs_portrets)
-    csv_rows = [["path", "name"]]
+def list_people(productions, portrets):
+    image_paths_productions = list_files(productions)
+    image_paths_portrets = list_files(portrets)
+    csv_rows = [["image_path", "name"]]
     names = []
 
     for image_path in image_paths_productions:
@@ -63,7 +46,6 @@ def list_people():
     for image_path in image_paths_portrets:
             rest = image_path.split('/')
             rest = rest[rest.index("People")+2:]
-            print(rest)
 
             if len(rest) > 1:
                 name = rest[0]
@@ -73,7 +55,6 @@ def list_people():
                 name = rest[1]
             if name.endswith("_"):
                 name = name[:-1]
-            print("Naam: " + name)
             if not name in names:
                 names.append(name)
 
@@ -81,17 +62,14 @@ def list_people():
 
     print("[INFO] numer of portret images: " + str(len(image_paths_portrets)))
     print("[INFO] number of people: " + str(len(names)))
-
-    if not os.path.exists("../data"):
-        os.mkdir("../data")
     
-    with open ("../data/filenames.csv", "w") as csvfile:
+    with open ("data/filenames.csv", "w") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerows(csv_rows)
     csvfile.close()
-    print("[INFO]: csv stored in ../data/filenames.csv")
+    print("[INFO]: csv stored in data/filenames.csv")
 
-def create_metadata():
-    print("[INFO] creation file names csv started")
-    list_people()
+def create_metadata(dirs_productions, dirs_portrets):
+    print("[INFO] Step 1: creation file names csv started")
+    list_people(dirs_productions, dirs_portrets)
     print("[INFO] creation file names csv ended")

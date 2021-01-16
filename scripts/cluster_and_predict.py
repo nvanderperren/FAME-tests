@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import pickle
 import pandas as pd
 import numpy as np
@@ -26,7 +29,6 @@ def cluster_faces(data):
     ids = pd.DataFrame({'name': data.name.unique(),
                     'personID': range(len(data.name.unique()))})
     data = data.merge(ids, on='name', how='left')
-    print(data['face_encoding'])
     encodings = data['face_encoding'].tolist()
 
     clusterer = hdbscan.HDBSCAN(
@@ -41,21 +43,15 @@ def cluster_faces(data):
     numUniqueFaces = len(np.where(labelIDs > -1)[0])
 
     data = data.drop('personID', 1)
-    print(list(data.columns))
     print(data)
-    # data.to_csv(
-    #    "drive/My Drive/FaceRecognition/Results/Face_recognition_predictions.csv")
-
     print("[INFO] # unique faces: {}".format(numUniqueFaces))
     print(str(clusterer.labels_.max()) + ' clusters are found')
     print(len(data.loc[data['HDBSCANclusters'] == -1]), "faces not clustered")
     calculateNeighbors(data, encodings)
     predict(data, clusterer, labelIDs)
-    return data
-    # visualise_clusters_image(clusterer,labelIDs)
+    # visualise_clusters_image(data, clusterer,labelIDs)
     # visualise_clusters_umap(data)
-    
-
+    return data
 
 def visualise_clusters_umap(data):
     print("[INFO] preparing UMAP visualisation")
@@ -118,7 +114,7 @@ def visualise_clusters_umap(data):
     output_notebook()
     show(plot_figure)
 
-def visualise_clusters_image(clusterer, labelIDs):
+def visualise_clusters_image(data, clusterer, labelIDs):
     print("[INFO] preparing visualisation clusters")
     # loop over the unique face integers
     for labelID in labelIDs:
@@ -133,7 +129,7 @@ def visualise_clusters_image(clusterer, labelIDs):
         # loop over the sampled indexes
         for i in idxs:
             # load the input image and extract the face ROI
-            image = cv2.imread(data.at[i, 'path'])
+            image = cv2.imread(data.at[i, 'image_path'])
             (top, right, bottom, left) = data.at[i, 'face_location']
             face = image[top:bottom, left:right]
 
@@ -142,7 +138,7 @@ def visualise_clusters_image(clusterer, labelIDs):
             face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
 
             faces.append(face)
-            print(data.at[i, 'path'])
+            print(data.at[i, 'image_path'])
 
         # create a montage using 96x96 "tiles" with 5 rows and 5 columns
         montage = build_montages(faces, (96, 96), (5, 5))[0]
@@ -181,7 +177,7 @@ def predict(data, clusterer, labelIDs):
                 Keymax = max(count, key=count.get)
                 if count[Keymax] > 1:
                     for i in idxs:
-                        if data.at[i, 'prediction'] == 'U-unknown':
+                        if data.at[i, 'prediction'] == 'unknown':
                             data.at[i, 'prediction'] = Keymax
                 else:
                     uniqueNames = []
@@ -194,7 +190,6 @@ def predict(data, clusterer, labelIDs):
                             # if data.at[i,'prediction'] == 'Unkown':
                             data.at[i, 'prediction'] = uniqueNames[0]
 
-    print(list(data.columns))
     print("Unknown people before clustering:", (data.name == 'unknown').sum())
     print("Unknown people after clustering:", (data.prediction == 'unknown').sum())
 
@@ -250,19 +245,17 @@ def calculateNeighbors(data, encodings):
 
     data['clusterList'] = cluster
 
-
 # main
-print("[INFO] loading data for clustering")
-data = pickle.loads(open(
-    "../data/face_encoding.pickle", "rb").read())
-data = pd.DataFrame(data)
-print("[INFO] start clustering")
-predictions = cluster_faces(data)
-print(predictions.columns)
-print(predictions)
-predictions.to_csv("../data/face-clustering-results.csv")
-predictions.to_pickle(
-        "../data/face-clustering-results.pickle")
-
+def cluster_and_predict():
+    print("[INFO] Step 4: clustering and prediction")
+    data = pickle.loads(open(
+        "data/pickle/face_encoding.pickle", "rb").read())
+    data = pd.DataFrame(data)
+    predictions = cluster_faces(data)
+    print(predictions.columns)
+    print(predictions)
+    predictions.to_csv("data/face-clustering-results.csv")
+    predictions.to_pickle(
+            "data/pickle/face-clustering-results.pickle")
 
 # installed python-Levenshtein

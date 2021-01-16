@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # import general utilities
 import os
 from PIL import Image
@@ -20,31 +23,24 @@ from detectron2.data import MetadataCatalog
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-'''
-# variables
-paths_and_names = pd.read_csv("../data/filenames.csv")
-paths_map = paths_and_names.to_dict()
-paths = pd.read_csv("../data/filenames.csv", usecols='path')
-'''
-
 # setup detection model
 # needs an image
-def setup_detection_model(im):
+def setup_detection_model(image, treshold):
     cfg = get_cfg()
     cfg.MODEL.DEVICE = 'cpu'
     cfg.merge_from_file(model_zoo.get_config_file(
         "COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7  # set threshold for this model
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = treshold  # set threshold for this model
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
         "COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
     predictor = DefaultPredictor(cfg)
 
     # Inference with a keypoint detection model
-    outputs = predictor(im)
+    outputs = predictor(image)
 
-    v = Visualizer(
-        im[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]), scale=1.2)
-    out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+    # v = Visualizer(
+    #    im[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]), scale=1.2)
+    #out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 
     # opencvImage = cv2.cvtColor(out.get_image()[:, :, ::-1], cv2.COLOR_RGB2BGR)
     # plt.imshow(opencvImage)
@@ -53,7 +49,7 @@ def setup_detection_model(im):
     return outputs
 
 
-def crop_face(img, out):
+def crop_face(image, out):
 
     found_faces = []
 
@@ -123,7 +119,7 @@ def crop_face(img, out):
                 else:
                     y2 = y_l_shoulder
 
-        cropped_image = img[int(y1):int(y2), int(x1):int(x2)]
+        cropped_image = image[int(y1):int(y2), int(x1):int(x2)]
         found_faces.append((int(y1), int(x2), int(y2), int(x1)))
 
         # opencvImage = cv2.cvtColor(cropped_image, cv2.COLOR_RGB2BGR)
@@ -139,7 +135,7 @@ def create_list_images():
     print("[INFO] creating a list of image paths")
     # all_faces.clear()
     d = {}
-    paths = pd.read_csv("../data/filenames.csv").values.tolist()
+    paths = pd.read_csv("data/filenames.csv").values.tolist()
     for path in paths:
         d[path[0]] = path[1]
 
@@ -148,10 +144,11 @@ def create_list_images():
     # print(p)
     return d
 
-def detecting_faces():
+
+def detecting_faces(treshold):
     i = 1
     index_face = 1
-    found_faces_info = [['index','path','name','face_location','crop']]
+    found_faces_info = [['image_path', 'name', 'face_location', 'crop']]
 
     # loop over the image paths
     all_paths = create_list_images()
@@ -161,7 +158,7 @@ def detecting_faces():
 
         # Use detectron for face detection
         image = cv2.imread(image_path)
-        out = setup_detection_model(image)
+        out = setup_detection_model(image, treshold)
         faces = crop_face(image, out)
         # print(faces)
 
@@ -169,16 +166,16 @@ def detecting_faces():
             print("[INFO] processing face nr. " + str(index_face))
             (top, right, bottom, left) = face
             cropped_image = image[top:bottom, left:right]
-            filepath = os.path.join("../data/faces", str(index_face) + ".png")
+            filepath = os.path.join("data/faces", str(index_face) + ".png")
             save_image(cropped_image, filepath)
             # plt.imshow(cropped_image)
             # plt.show()
-            results = [index_face, image_path, all_paths[image_path], face, filepath]
+            results = [image_path,all_paths[image_path], face, filepath]
             found_faces_info.append(results)
             index_face = index_face+1
-        
+
         i = i+1
-    
+
     print("[INFO] Total faces found: " + str(len(found_faces_info)-1))
     write_csv(found_faces_info)
     print("Faces found and saved to drive")
@@ -186,19 +183,16 @@ def detecting_faces():
 # Save faces as seperate images
 def save_image(image, filepath):
     opencvImage = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    plt.imsave(filepath,opencvImage)
+    plt.imsave(filepath, opencvImage)
     return filepath
 
 # Save information in CSV
 def write_csv(lines):
-    with open("../data/found-faces.csv", 'w') as csv_file:
+    with open("data/found-faces.csv", 'w') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerows(lines)
     csv_file.close()
 
-
-def detect_and_crop():
-    print("[INFO] start detecting faces")
-    if not os.path.exists("../data/faces"):
-        os.mkdir("../data/faces")
-    detecting_faces()
+def detect_and_crop(treshold):
+    print("[INFO] Step 2: start detecting faces")
+    detecting_faces(treshold)
