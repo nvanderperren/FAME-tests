@@ -36,17 +36,16 @@ def cluster_faces(data):
 
 
     labelIDs = np.unique(clusterer.labels_)
-    data['HDBSCANclusters'] = clusterer.labels_
-    
+    data['HDBSCAN_clusters'] = clusterer.labels_    
     data['probability'] = clusterer.probabilities_
 
     numUniqueFaces = len(np.where(labelIDs > -1)[0])
 
     data = data.drop('personID', 1)
-    print(data)
+    # print(data)
     print("[INFO] # unique faces: {}".format(numUniqueFaces))
     print(str(clusterer.labels_.max()) + ' clusters are found')
-    print(len(data.loc[data['HDBSCANclusters'] == -1]), "faces not clustered")
+    print(len(data.loc[data['HDBSCAN_clusters'] == -1]), "faces not clustered")
     calculateNeighbors(data, encodings)
     predict(data, clusterer, labelIDs)
     # visualise_clusters_image(data, clusterer,labelIDs)
@@ -65,17 +64,17 @@ def visualise_clusters_umap(data):
     df = pd.DataFrame(embedding, columns=('x', 'y'))
     df['class'] = data['name']
     df['image'] = data['embeddableImage']
-    df['clusterID'] = [str(x+1) for x in list(data['HDBSCANclusters'])]
+    df['clusterID'] = [str(x+1) for x in list(data['HDBSCAN_clusters'])]
     df['probability'] = data['probability']
 
-    n = len(list(np.unique(data['HDBSCANclusters'])))
+    n = len(list(np.unique(data['HDBSCAN_clusters'])))
     if n < 255:
         pal = plasma(n)
     else:
         pal = Plasma256
     datasource = ColumnDataSource(df)
     color_mapping = CategoricalColorMapper(
-        factors=[str(x+1) for x in list(np.unique(data['HDBSCANclusters']))], palette=pal)
+        factors=[str(x+1) for x in list(np.unique(data['HDBSCAN_clusters']))], palette=pal)
 
     plot_figure = figure(
         title='UMAP projection',
@@ -206,7 +205,7 @@ def calculateNeighbors(data, encodings):
     '''
     for i in indices[9]:
     person = data.loc[i, 'name'] 
-    cluster = data.loc[i, 'HDBSCANclusters']
+    cluster = data.loc[i, 'HDBSCAN_clusters']
     # print(person, cluster)
     '''
     reducer = umap.UMAP(n_neighbors=2, min_dist=0.2,
@@ -218,7 +217,7 @@ def calculateNeighbors(data, encodings):
     '''
     for i in knn_indices[9]:
     person = data.loc[i, 'name'] 
-    cluster = data.loc[i, 'HDBSCANclusters']
+    cluster = data.loc[i, 'HDBSCAN_clusters']
     # print(person, cluster)
     '''
 
@@ -229,21 +228,27 @@ def calculateNeighbors(data, encodings):
         umapneighbors.append(knn_indices[i].tolist())
 
     data['neighbors'] = neighbors
-    data['UMAPneighbors'] = umapneighbors
+    data['UMAP_neighbors'] = umapneighbors
 
     cluster = []
     for i, row in data.iterrows():
-        c = data.at[i, 'HDBSCANclusters']
+        c = data.at[i, 'HDBSCAN_clusters']
 
         if c != -1:
-            lijst = data[data['HDBSCANclusters'] == c].index.tolist()
+            lijst = data[data['HDBSCAN_clusters'] == c].index.tolist()
             cluster.append(lijst)
             #print(i, lijst, namen)
         else:
             lijst = []
             cluster.append(lijst)
 
-    data['clusterList'] = cluster
+    data['cluster_list'] = cluster
+
+def write_data(data):
+    data.to_pickle("data/pickle/face-clustering-results.pickle")
+    print (data.columns)
+    data = data[['image_path','face_location', 'crop', 'cluster_list','prediction']]
+    data.to_csv("data/predictions.csv", index=True, index_label='number')
 
 # main
 def cluster_and_predict():
@@ -252,10 +257,6 @@ def cluster_and_predict():
         "data/pickle/face_encoding.pickle", "rb").read())
     data = pd.DataFrame(data)
     predictions = cluster_faces(data)
-    print(predictions.columns)
-    print(predictions)
-    predictions.to_csv("data/face-clustering-results.csv")
-    predictions.to_pickle(
-            "data/pickle/face-clustering-results.pickle")
+    write_data(predictions)
 
 # installed python-Levenshtein
