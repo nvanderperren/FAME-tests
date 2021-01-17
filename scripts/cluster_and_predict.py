@@ -47,7 +47,7 @@ def cluster_faces(data):
     print(len(data.loc[data['HDBSCAN_clusters'] == -1]), "faces not clustered")
     calculateNeighbors(data, encodings)
     predict(data, clusterer, labelIDs)
-    #visualise_clusters_image(data, clusterer,labelIDs)
+    visualise_clusters_image(data, clusterer,labelIDs)
     visualise_clusters_umap(data)
     return data
 
