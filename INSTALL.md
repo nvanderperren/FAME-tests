@@ -116,6 +116,12 @@ Activate the virtual environment: `workon FAME`
 pip3 install face_recognition
 ```
 
+## fuzzywuzzy
+
+```bash
+pip3 install fuzzywuzzy
+```
+
 ## UMAP
 
 Activate the virtual environment: `workon FAME`
@@ -142,4 +148,5 @@ pip install datashader
 pip install bokeh
 pip install holoviews
 pip install imutils
+pip install python-Levenshtein
 ```

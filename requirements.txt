@@ -1,0 +1,25 @@
+bokeh==2.2.3
+datashader==0.12.0
+detectron2 @ git+https://github.com/facebookresearch/detectron2.git@f6388d0fad94254926a544c16d1f2c1e8b72ba2f
+dlib==19.21.1
+fuzzywuzzy==0.18.0
+hdbscan==0.8.26
+holoviews==1.14.1
+imutils==0.5.3
+ipython==7.19.0
+matplotlib==3.3.3
+numpy==1.19.5
+opencv-contrib-python==4.5.1.48
+pandas==1.2.0
+Pillow==8.1.0
+pyfacy==1.0.1
+pyfacy-dlib-models==0.0.4
+python-Levenshtein==0.12.0
+PyYAML==5.1
+scikit-image==0.18.1
+scikit-learn==0.23.2
+scipy==1.6.0
+sklearn==0.0
+torch==1.7.1
+torchvision==0.8.2
+umap-learn==0.5.0
