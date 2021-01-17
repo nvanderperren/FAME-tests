@@ -76,8 +76,6 @@ def write_data(filename,data):
     f = open('data/pickle/' + filename + '.pickle', 'wb')
     f.write(pickle.dumps(data))
     f.close()
-    data = pd.DataFrame(data)
-    data.to_csv('data/' + filename + '.csv', index=False)
 
 def encoding():
     print("[INFO] Step 3: Encoding faces...")

@@ -36,9 +36,12 @@ def create_folders():
 
 
 def main():
+    print("[INFO] workflow started")
     create_folders()
     create_metadata(production_dirs, portret_dirs)
     detect_and_crop(treshold)
     encoding()
     cluster_and_predict()
+    print("[INFO] workflow ended")
+
 main()

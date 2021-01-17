@@ -15,7 +15,7 @@ import umap.plot
 from sklearn import neighbors
 from sklearn.neighbors import NearestNeighbors
 
-from bokeh.io import output_notebook
+from bokeh.io import output_notebook, output_file, save
 from bokeh.plotting import figure, show, output_notebook
 from bokeh.models import HoverTool, ColumnDataSource, CategoricalColorMapper
 from bokeh.palettes import Spectral10, Turbo256, Plasma256, plasma
@@ -27,16 +27,15 @@ from fuzzywuzzy import process
 def cluster_faces(data):
     print("[INFO] clustering using HDBSCAN algorithm")
     ids = pd.DataFrame({'name': data.name.unique(),
-                    'personID': range(len(data.name.unique()))})
+                        'personID': range(len(data.name.unique()))})
     data = data.merge(ids, on='name', how='left')
     encodings = data['face_encoding'].tolist()
 
     clusterer = hdbscan.HDBSCAN(
-        min_cluster_size=2, min_samples=2, metric='euclidean').fit(encodings) # a cluster must have at least two faces
-
+        min_cluster_size=2, min_samples=2, metric='euclidean').fit(encodings)  # a cluster must have at least two faces
 
     labelIDs = np.unique(clusterer.labels_)
-    data['HDBSCAN_clusters'] = clusterer.labels_    
+    data['HDBSCAN_clusters'] = clusterer.labels_
     data['probability'] = clusterer.probabilities_
 
     numUniqueFaces = len(np.where(labelIDs > -1)[0])
@@ -48,24 +47,25 @@ def cluster_faces(data):
     print(len(data.loc[data['HDBSCAN_clusters'] == -1]), "faces not clustered")
     calculateNeighbors(data, encodings)
     predict(data, clusterer, labelIDs)
-    # visualise_clusters_image(data, clusterer,labelIDs)
-    # visualise_clusters_umap(data)
+    #visualise_clusters_image(data, clusterer,labelIDs)
+    visualise_clusters_umap(data)
     return data
+
 
 def visualise_clusters_umap(data):
     print("[INFO] preparing UMAP visualisation")
-    encodings = data['encodings'].tolist()
+    encodings = data['face_encoding'].tolist()
 
     reducer = umap.UMAP(n_neighbors=2, min_dist=0.2,
-                    metric='euclidean', random_state=42).fit(encodings)
+                        metric='euclidean', random_state=42).fit(encodings)
     embedding = reducer.transform(encodings)
-    print(embedding.shape)
 
     df = pd.DataFrame(embedding, columns=('x', 'y'))
     df['class'] = data['name']
-    df['image'] = data['embeddableImage']
+    df['image'] = data['image']
     df['clusterID'] = [str(x+1) for x in list(data['HDBSCAN_clusters'])]
     df['probability'] = data['probability']
+    df['prediction'] = data['prediction']
 
     n = len(list(np.unique(data['HDBSCAN_clusters'])))
     if n < 255:
@@ -97,6 +97,9 @@ def visualise_clusters_umap(data):
         <div>
             <span style='font-size: 12px'>@probability</span>
         </div>
+        <div>
+            <span style='font-size: 12px'>@prediction</span>
+        </div>
     </div>
     """))
 
@@ -110,8 +113,12 @@ def visualise_clusters_umap(data):
         size=4
     )
 
-    output_notebook()
-    show(plot_figure)
+    # output_notebook()
+    output_file("data/umap_clusters.html",
+                title="FAME results: UMAP clusters", mode='inline')
+    # show(plot_figure)
+    save(plot_figure)
+
 
 def visualise_clusters_image(data, clusterer, labelIDs):
     print("[INFO] preparing visualisation clusters")
@@ -143,8 +150,12 @@ def visualise_clusters_image(data, clusterer, labelIDs):
         montage = build_montages(faces, (96, 96), (5, 5))[0]
 
         fig = plt.figure(figsize=(20, 30))
-        plt.imshow(montage)
-        # plt.imsave()
+        # plt.imshow(montage)
+        filename = 'data/clusters/cluster_' + str(labelID) + '.png'
+        if labelID == -1:
+            filename = 'data/clusters/not_clustered.png'
+        plt.imsave(filename, montage)
+
 
 def predict(data, clusterer, labelIDs):
     print("[INFO] predicting persons")
@@ -190,16 +201,19 @@ def predict(data, clusterer, labelIDs):
                             data.at[i, 'prediction'] = uniqueNames[0]
 
     print("Unknown people before clustering:", (data.name == 'unknown').sum())
-    print("Unknown people after clustering:", (data.prediction == 'unknown').sum())
+    print("Unknown people after clustering:",
+          (data.prediction == 'unknown').sum())
 
-    print(len(data.loc[data['prediction'] == "unknown"]))
+    # print(len(data.loc[data['prediction'] == "unknown"]))
     # print(data['data.face_encoding'][0].shape)
     # data.to_pickle(
     #    "drive/My Drive/FaceRecognition/Results/Face-clustering-results.pickle")
 
+
 def calculateNeighbors(data, encodings):
     print("[INFO] calculating neighbours")
-    nbrs = NearestNeighbors(n_neighbors=20, algorithm='ball_tree').fit(encodings)
+    nbrs = NearestNeighbors(
+        n_neighbors=20, algorithm='ball_tree').fit(encodings)
     distances, indices = nbrs.kneighbors(encodings)
     # print(indices, distances)
     '''
@@ -244,13 +258,16 @@ def calculateNeighbors(data, encodings):
 
     data['cluster_list'] = cluster
 
+
 def write_data(data):
     data.to_pickle("data/pickle/face-clustering-results.pickle")
-    print (data.columns)
-    data = data[['image_path','face_location', 'crop', 'cluster_list','prediction']]
+    data = data[['image_path', 'face_location', 'crop',
+                 'HDBSCAN_clusters', 'cluster_list', 'prediction']]
     data.to_csv("data/predictions.csv", index=True, index_label='number')
 
 # main
+
+
 def cluster_and_predict():
     print("[INFO] Step 4: clustering and prediction")
     data = pickle.loads(open(
@@ -259,4 +276,6 @@ def cluster_and_predict():
     predictions = cluster_faces(data)
     write_data(predictions)
 
+
+cluster_and_predict()
 # installed python-Levenshtein

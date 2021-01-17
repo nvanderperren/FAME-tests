@@ -16,4 +16,11 @@ Start the workflow
 python3 workflow.py
 ```
 
-You will find a csv with predictions (`predictions.csv`) in the `data/` folder and a visualisation of the clusters in the `data/clusters/` folder. (visualisations not implemented yet.)
+## Results
+
+You will find:
+
+1. a csv with predictions (`predictions.csv`) in the `data/` folder
+2. cropped faces in the `data/faces/` folder
+3. a visualisation of the clusters in the `data/clusters/` folder
+4. a UMAP visualisation (`UMAP_clusters.html`) in the `data/` folder
