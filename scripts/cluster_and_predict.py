@@ -277,5 +277,4 @@ def cluster_and_predict():
     write_data(predictions)
 
 
-cluster_and_predict()
-# installed python-Levenshtein
+# cluster_and_predict()
