@@ -2,6 +2,12 @@
 
 ## Getting started
 
+Clone this repository:
+
+```bash
+git clone https://github.com/nvanderperren/FAME-tests.git && cd FAME-tests
+```
+
 Install neceassary python packages.
 
 ```bash
