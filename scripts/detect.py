@@ -131,11 +131,11 @@ def crop_face(image, out):
 
 # Create a list with all images (combine images with portraits)
 
-def create_list_images():
+def create_list_images(csv_file):
     print("[INFO] creating a list of image paths")
     # all_faces.clear()
     d = {}
-    paths = pd.read_csv("data/filenames.csv").values.tolist()
+    paths = pd.read_csv(csv_file).values.tolist()
     for path in paths:
         d[path[0]] = path[1]
 
@@ -145,13 +145,13 @@ def create_list_images():
     return d
 
 
-def detecting_faces(treshold):
+def detecting_faces(csv_file, treshold):
     i = 1
     index_face = 1
     found_faces_info = [['image_path', 'name', 'face_location', 'crop']]
 
     # loop over the image paths
-    all_paths = create_list_images()
+    all_paths = create_list_images(csv_file)
     for image_path in all_paths.keys():
         # load the input image and convert it from RGB (OpenCV ordering) to dlib ordering (RGB)
         print(i, "[INFO] processing image {}".format(image_path))
@@ -193,6 +193,6 @@ def write_csv(lines):
         writer.writerows(lines)
     csv_file.close()
 
-def detect_and_crop(treshold):
+def detect_and_crop(csv_file, treshold):
     print("[INFO] Step 2: start detecting faces")
-    detecting_faces(treshold)
+    detecting_faces(csv_file, treshold)
