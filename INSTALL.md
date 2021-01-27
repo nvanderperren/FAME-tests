@@ -133,7 +133,7 @@ pip3 install umap-learn
 Activate the virtual environment: `workon FAME`
 
 ```bash
-pip3 install hdbscan
+pip3 install --user hdbscan
 ```
 
 ## other
