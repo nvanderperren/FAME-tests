@@ -126,7 +126,6 @@ Activate the virtual environment: `workon FAME`
 
 ```bash
 pip3 install umap-learn
-pip3 install umap-learn[plot]
 ```
 
 ## HDBSCAN
