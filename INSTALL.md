@@ -92,7 +92,7 @@ Activate the virtual environment: `workon FAME`
 ### installation
 
 ```bash
-CC=clang XXX=clang++ pip install git+https://github.com/facebookresearch/detectron2.git
+CC=clang XXX=clang++ pip3 install git+https://github.com/facebookresearch/detectron2.git
 ```
 
 ## pyfacy
