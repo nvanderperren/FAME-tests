@@ -53,7 +53,7 @@ source ~/.bash_profile
 
 * create virtual environment: `mkvirtualenv FAME -p python3`
 * activate virtual environment: `workon FAME`
-* install python libraries: `pip install numpy scipy matplotlib scikit-image scikit-learn ipython pandas`
+* install python libraries: `pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython pandas`
 * deactivate virtual environment: `deactivate`
 * install openCV: `brew install opencv`
 * configure python (check python version first):
@@ -95,25 +95,23 @@ Activate the virtual environment: `workon FAME`
 CC=clang XXX=clang++ pip install git+https://github.com/facebookresearch/detectron2.git
 ```
 
-## face_recognition
+## pyfacy
 
 Activate the virtual environment: `workon FAME`
 
 ### requirements
 
-* dlib:
-  
-  ```bash
-  git clone https://github.com/davisking/dlib.git && cd dlib
-  python3 setup.py install
-  ```
-
-* cmake: `brew install cmake`
+* dlib: `pip3 install dlib`
+* pyfacy models: `pip3 install pyfacy_dlib_models`
+* imutils: `pip3 install imutils`
+* numpy: `pip3 install numpy`
+* scipy: `pip3 install scipy`
+* scikit-learn: `pip3 install scikit-learn`
 
 ### installation
 
 ```bash
-pip3 install face_recognition
+pip3 install pyfacy
 ```
 
 ## fuzzywuzzy
@@ -127,8 +125,8 @@ pip3 install fuzzywuzzy
 Activate the virtual environment: `workon FAME`
 
 ```bash
-pip install umap-learn
-pip install umap-learn[plot]
+pip3 install umap-learn
+pip3 install umap-learn[plot]
 ```
 
 ## HDBSCAN
@@ -136,7 +134,7 @@ pip install umap-learn[plot]
 Activate the virtual environment: `workon FAME`
 
 ```bash
-pip install hdbscan
+pip3 install hdbscan
 ```
 
 ## other
@@ -144,9 +142,8 @@ pip install hdbscan
 Activate the virtual environment: `workon FAME`
 
 ```bash
-pip install datashader
-pip install bokeh
-pip install holoviews
-pip install imutils
-pip install python-Levenshtein
+pip3 install datashader
+pip3 install bokeh
+pip3 install holoviews
+pip3 install python-Levenshtein
 ```
