@@ -30,11 +30,11 @@ xcode-select --install
 
 ```bash
 brew update
-brew install python3
+brew install python@3.8 # 3.8 want 3.9 wordt nog niet door alle packages ondersteund.
 
-brew link python3
+brew link python@3.8
 
-brew upgrade python3
+brew upgrade python@3.8
 
 python3 --version
 ```
