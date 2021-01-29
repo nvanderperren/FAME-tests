@@ -194,5 +194,5 @@ def write_csv(lines):
     csv_file.close()
 
 def detect_and_crop(csv_file, treshold):
-    print("[INFO] Step 2: start detecting faces")
+    print("[INFO] Step 1: start detecting faces")
     detecting_faces(csv_file, treshold)

@@ -78,7 +78,7 @@ def write_data(filename,data):
     f.close()
 
 def encoding():
-    print("[INFO] Step 3: Encoding faces...")
+    print("[INFO] Step 2: Encoding faces...")
     data = encoding_faces()
     print("[INFO] serializing encodings...")
     write_data('face_encoding', data)

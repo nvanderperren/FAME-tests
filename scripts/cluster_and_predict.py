@@ -265,11 +265,11 @@ def write_data(data):
                  'HDBSCAN_clusters', 'cluster_list', 'prediction']]
     data.to_csv("data/predictions.csv", index=True, index_label='number')
 
+
 # main
 
-
 def cluster_and_predict():
-    print("[INFO] Step 4: clustering and prediction")
+    print("[INFO] Step 3: clustering and prediction")
     data = pickle.loads(open(
         "data/pickle/face_encoding.pickle", "rb").read())
     data = pd.DataFrame(data)
