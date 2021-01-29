@@ -59,15 +59,15 @@ source ~/.bash_profile
 * configure python (check python version first):
   
   ```bash
-  echo /usr/local/opt/opencv/lib/python3.6/site-packages >> usr/local/lib/python3.6/site-packages/opencv3.pth
+  echo /usr/local/opt/opencv/lib/python3.8/site-packages >> usr/local/lib/python3.8/site-packages/opencv3.pth
   ```
 
 * link OpenCV with virtual environment (check python version):
   
   ```bash
   find /usr/local/opt/opencv3/lib/ -name cv2*.so`
-  cd ~/.virtualenvs/FAME/lib/python3.6/site-packages/
-  ln -s /usr/local/opt/opencv3/lib/python3.6/site-packages/cv2.cpython-36m-darwin.so cv2.so
+  cd ~/.virtualenvs/FAME/lib/python3.8/site-packages/
+  ln -s /usr/local/opt/opencv3/lib/python3.8/site-packages/cv2.cpython-36m-darwin.so cv2.so
   ```
 
 * test OpenCV:
