@@ -183,8 +183,10 @@ def detecting_faces(csv_file, treshold):
 # Save faces as seperate images
 def save_image(image, filepath):
     opencvImage = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    plt.imsave(filepath, opencvImage)
-    return filepath
+    PIL_image = Image.fromarray(opencvImage)
+    #plt.imsave(filepath, opencvImage)
+    PIL_image.thumbnail((256,256))
+    PIL_image.save(filepath)
 
 # Save information in CSV
 def write_csv(lines):
