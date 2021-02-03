@@ -62,14 +62,18 @@ def encoding_faces():
             face_location_data = row['face_location']
             face_location = get_face_location(face_location_data)
             cropped_image = row['crop']
-            cropped_image_data = get_face(image_path, face_location)
-            encoding = utils.img_to_encodings(cropped_image_data)
-            if len(encoding) > 0:
-                resized_image = resize_image(cropped_image_data)
-                face_encoding = embeddable_image(resized_image)
-                data = [{"image_path": image_path, "name": person, "face_location": face_location, "crop": cropped_image, 
-                "face_encoding": encoding[0], "image": face_encoding}]
-                lines.extend(data)   
+            try:
+                cropped_image_data = get_face(image_path, face_location)
+                encoding = utils.img_to_encodings(cropped_image_data)
+                if len(encoding) > 0:
+                    resized_image = resize_image(cropped_image_data)
+                    face_encoding = embeddable_image(resized_image)
+                    data = [{"image_path": image_path, "name": person, "face_location": face_location, "crop": cropped_image, 
+                    "face_encoding": encoding[0], "image": face_encoding}]
+                    lines.extend(data)
+            except:
+                print("[ERROR] could not open image {}, skipping...".format(image_path))
+
     return lines
 
 def write_data(filename,data):

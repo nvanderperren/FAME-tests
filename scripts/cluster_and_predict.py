@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 from imutils import build_montages
 import matplotlib.pyplot as plt
+import math
 
 # imports clustering
 import hdbscan
@@ -125,7 +126,7 @@ def visualise_clusters_image(data, clusterer, labelIDs):
     # loop over the unique face integers
     for labelID in labelIDs:
         # find all indexes into the `data` array that belong to the current label ID, then randomly sample a maximum of 25 indexes from the set
-        print("[INFO] faces for face ID: {}".format(labelID))
+        print("[INFO] preparing face ID: {}".format(labelID))
         idxs = np.where(clusterer.labels_ == labelID)[0]
         idxs = np.random.choice(idxs, size=min(25, len(idxs)), replace=False)
 
@@ -135,19 +136,24 @@ def visualise_clusters_image(data, clusterer, labelIDs):
         # loop over the sampled indexes
         for i in idxs:
             # load the input image and extract the face ROI
-            image = cv2.imread(data.at[i, 'image_path'])
-            (top, right, bottom, left) = data.at[i, 'face_location']
-            face = image[top:bottom, left:right]
+            try:
+                image = cv2.imread(data.at[i, 'image_path'])
+                (top, right, bottom, left) = data.at[i, 'face_location']
+                face = image[top:bottom, left:right]
 
-            # force resize the face ROI to 96x96 and then add it to the faces montage list
-            face = cv2.resize(face, (96, 96))
-            face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+                # force resize the face ROI to 96x96 and then add it to the faces montage list
+                face = cv2.resize(face, (96, 96))
+                face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
 
-            faces.append(face)
-            print(data.at[i, 'image_path'])
+                faces.append(face)
+                #print(data.at[i, 'image_path'])
+            except:
+                print("[ERROR] could not read image {}, skipping...".format(data.at[i, 'image_path']))
 
         # create a montage using 96x96 "tiles" with 5 rows and 5 columns
-        montage = build_montages(faces, (96, 96), (5, 5))[0]
+        count_rows = math.ceil(len(faces)/5)
+        count_columns = len(faces) if len(faces) < 5 else 5
+        montage = build_montages(faces, (96, 96), (count_columns, count_rows))[0]
 
         fig = plt.figure(figsize=(20, 30))
         # plt.imshow(montage)
@@ -277,4 +283,4 @@ def cluster_and_predict():
     write_data(predictions)
 
 
-# cluster_and_predict()
+cluster_and_predict()
