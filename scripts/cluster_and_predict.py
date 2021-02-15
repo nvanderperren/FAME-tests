@@ -283,4 +283,4 @@ def cluster_and_predict():
     write_data(predictions)
 
 
-cluster_and_predict()
+#cluster_and_predict()
