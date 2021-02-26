@@ -25,6 +25,19 @@ The script `preparations_KP.py` creates this CSV for the Kunstenpunt images.
 2. add portret and production folders in the `production_dirs` and `portret_dirs` variables in `preparations_KP.py`
 3. start the script: `python3 preparations_KP.py`
 
+### (Optional) Get extra metadata of path names (Kunstenpunt only)
+
+The script needs:
+
+* a CSV with The workflow needs a CSV with columns _image path_ (= absolute path of image) and _name_ (name of person on picture or unknown);
+* a CSV with the QID of the production company, QID of the production and the Kunstenpunt ID of the production. You can find this file `identifiers_KP.csv` in this repository.
+
+You can adjust some parameters in `scripts/get_info_from_path.py`:
+
+1. OUTPUT_FILENAME: the filename of the resulting csv file, now `kunstenpunt_data.csv`
+2. IDENTIFIERS_CSV: the name of the csv with the identifiers, now `identifiers_KP.csv`
+3. FILENAME_CSV: is now `data/filenames.csv`, which is created in first step
+
 ### Start the workflow
 
 The workflow needs a CSV with columns _image path_ (= absolute path of image) and _name_ (name of person on picture or unknown).
@@ -32,7 +45,7 @@ The workflow needs a CSV with columns _image path_ (= absolute path of image) an
 You can adjust some parameters in `workflow.py`:
 
 1. treshold: is now 0.7
-2. csv_file: is now `data/filenames.csv`, which is created in previous step
+2. csv_file: is now `data/filenames.csv`, which is created in the first step
 
 Then, start the script:
 

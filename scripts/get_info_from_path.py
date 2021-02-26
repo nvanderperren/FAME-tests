@@ -8,6 +8,11 @@ import re
 # searchterm gebruiken
 # opzoeken en dan via CSV DictReader kunstenpunt_id, company QID en productie QID ophalen
 
+OUTPUT_FILENAME = "kunstenpunt_data.csv"
+IDENTIFIERS_CSV = "identifiers_KP.csv"
+FILENAMES_CSV = "data/filenames.csv"
+
+# cleanup metadata
 def remove_chars(word):
     if word.endswith('_'):
         word = word[-1]
@@ -18,13 +23,14 @@ def remove_chars(word):
 
     return word
 
+# retrieve the century (19 or 20) of a year
 def get_century(year):
     if int(year) > 20:
         return "19" + year
     else:
         return "20" + year
     
-
+# return season in format YYYY-YYYY where possible
 def beautify_season(season):
     if season == '':
         return ''
@@ -53,7 +59,7 @@ def beautify_season(season):
     
     return season
 
-
+# get the searchterm used in the identifiers csv file
 def get_searchterm(production, season):
     if production == '' or season == '':
         return
@@ -61,17 +67,19 @@ def get_searchterm(production, season):
     searchterm = production + " (" + season + ")"
     return searchterm
 
+# write infos in csv
 def write_line(line):
-    with open('productions.csv', 'a') as write_file:
+    with open(OUTPUT_FILENAME, 'a') as write_file:
         writer = csv.writer(write_file)
         writer.writerow(line)
     write_file.close()
 
+# get identifiers (QID's, KP ID) in other csv_file
 def find_identifiers_from_csv(searchterm):
     company_qid = ''
     production_qid = ''
     kunstenpunt_id = ''
-    with open('identifiers_KP.csv', 'r') as input_file:
+    with open(IDENTIFIERS_CSV, 'r') as input_file:
         csv_reader = csv.DictReader(input_file)
         for row in csv_reader:
             if row['searchterm'] == searchterm:
@@ -84,7 +92,7 @@ def find_identifiers_from_csv(searchterm):
     "kunstenpunt_id": kunstenpunt_id}
     
     
-
+# method to get info from path of image
 def get_info_from_path(path):
     theaterseizoen =''
     productietitel = ''
@@ -189,14 +197,16 @@ def get_info_from_path(path):
     write_line(line)
     
 
-with open('productions.csv', 'w') as output_file:
+## main
+
+with open(OUTPUT_FILENAME, 'w') as output_file:
     writer = csv.writer(output_file)
     writer.writerow(['path', 'organisatie', 'productie', 'seizoen', 'persoon', 'gezelschap_QID', 
     'productie_QID', 'kunstenpunt_ID'])
 output_file.close()
 
 
-with open('data/filenames.csv', 'r') as read_file:
+with open(FILENAMES_CSV, 'r') as read_file:
 
     identifiers = {}
 
