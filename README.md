@@ -29,7 +29,7 @@ The script `preparations_KP.py` creates this CSV for the Kunstenpunt images.
 
 The script needs:
 
-* a CSV with The workflow needs a CSV with columns _image path_ (= absolute path of image) and _name_ (name of person on picture or unknown);
+* a CSV with columns _image path_ (= absolute path of image) and _name_ (name of person on picture or unknown);
 * a CSV with the QID of the production company, QID of the production and the Kunstenpunt ID of the production. You can find this file `identifiers_KP.csv` in this repository.
 
 You can adjust some parameters in `scripts/get_info_from_path.py`:
