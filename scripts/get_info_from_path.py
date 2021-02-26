@@ -18,18 +18,45 @@ def remove_chars(word):
 
     return word
 
+def get_century(year):
+    if int(year) > 20:
+        return "19" + year
+    else:
+        return "20" + year
+    
+
+def beautify_season(season):
+    if season == '':
+        return ''
+
+    try:
+        int(season[:2])
+    except:
+        return season
+
+    if len(season) < 9:
+        start = season[:2]
+        if len(season) == 5:
+            end = season[3:]
+            
+            season = get_century(start) + '-' + get_century(end) 
+        elif len(season) == 7:
+            season = get_century(season[:2]) + season[2:]
+
+        elif len(season) == 8:
+            mid = season[3:5]
+            end = season[6:]
+            season = get_century(start) + '-' + get_century(mid) + '-' + get_century(end)
+
+        elif len(season) == 2:
+            season = get_century(season)
+    
+    return season
+
 
 def get_searchterm(production, season):
     if production == '' or season == '':
         return
-
-    if len(season) < 9:
-        if len(season) == 5:
-            season = "19" + season[:3] + "19" + season[3:]
-        elif len(season) == 7:
-            season = "19" + season
-        else:
-            season = "19" + season
     
     searchterm = production + " (" + season + ")"
     return searchterm
@@ -131,6 +158,11 @@ def get_info_from_path(path):
             if a is None and b is None and c is None:
                 productietitel = theaterseizoen
                 theaterseizoen = ''   
+    
+        # cleanup
+        theaterseizoen = beautify_season(theaterseizoen)
+        podiumkunstengezelschap = remove_chars(podiumkunstengezelschap)
+        productietitel = remove_chars(productietitel)
 
     else:
         if (len(info)) > 1:
@@ -139,7 +171,9 @@ def get_info_from_path(path):
             if 'namen ' in person.lower():
                 person = info[2]
 
-    search_term = get_searchterm(remove_chars(productietitel), theaterseizoen)
+
+
+    search_term = get_searchterm(productietitel, theaterseizoen)
     if search_term is not None:
         if not search_term in identifiers.keys():
             list_identifiers = find_identifiers_from_csv(search_term)
@@ -150,8 +184,8 @@ def get_info_from_path(path):
         kunstenpunt_id = identifiers[search_term]["kunstenpunt_id"]
 
        
-    line = [path, remove_chars(podiumkunstengezelschap), remove_chars(productietitel), 
-    theaterseizoen, person, company_qid, production_qid, kunstenpunt_id]
+    line = [path, podiumkunstengezelschap, productietitel, theaterseizoen, person, 
+    company_qid, production_qid, kunstenpunt_id]
     write_line(line)
     
 
