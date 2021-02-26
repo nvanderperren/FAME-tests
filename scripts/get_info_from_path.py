@@ -4,10 +4,9 @@
 import csv
 import re
 
-# meestal vier elementen in de vorm: producer, seizoen, titel
-# maar soms kan het ook 1 zijn: skippen, heeft niets,
-# soms is het ook locatie, seizoen, titel
-# als het er maar drie zijn, dan is het meestal: organisatie, titel,
+# combineren met een andere CSV
+# searchterm gebruiken
+# opzoeken en dan via CSV DictReader kunstenpunt_id, company QID en productie QID ophalen
 
 def remove_chars(word):
     if word.endswith('_'):
@@ -20,19 +19,53 @@ def remove_chars(word):
     return word
 
 
+def get_searchterm(production, season):
+    if production == '' or season == '':
+        return
+
+    if len(season) < 9:
+        if len(season) == 5:
+            season = "19" + season[:3] + "19" + season[3:]
+        elif len(season) == 7:
+            season = "19" + season
+        else:
+            season = "19" + season
+    
+    searchterm = production + " (" + season + ")"
+    return searchterm
+
 def write_line(line):
     with open('productions.csv', 'a') as write_file:
         writer = csv.writer(write_file)
         writer.writerow(line)
     write_file.close()
 
-
+def find_identifiers_from_csv(searchterm):
+    company_qid = ''
+    production_qid = ''
+    kunstenpunt_id = ''
+    with open('identifiers_KP.csv', 'r') as input_file:
+        csv_reader = csv.DictReader(input_file)
+        for row in csv_reader:
+            if row['searchterm'] == searchterm:
+                company_qid = row['production_wiki_id']
+                production_qid = row['wikidata_id']
+                kunstenpunt_id = row['kunstenpunt_id'].split('.')[0]
+        
+    input_file.close()
+    return {"company_qid": company_qid, "production_qid": production_qid, 
+    "kunstenpunt_id": kunstenpunt_id}
+    
+    
 
 def get_info_from_path(path):
     theaterseizoen =''
     productietitel = ''
     podiumkunstengezelschap = ''
     person = ''
+    company_qid = ''
+    production_qid = ''
+    kunstenpunt_id = ''
 
     line = []
 
@@ -42,7 +75,7 @@ def get_info_from_path(path):
     #print("busy with {} with length {}".format(path, str(len(info))))
 
     if not ('portretten' in path.lower() or 'fotomaterial personen' in path.lower()):
-        person = ''     
+        person = ''  
 
         # if len(info) > 3
 
@@ -97,36 +130,52 @@ def get_info_from_path(path):
 
             if a is None and b is None and c is None:
                 productietitel = theaterseizoen
-                theaterseizoen = ''
-    
+                theaterseizoen = ''   
+
     else:
         if (len(info)) > 1:
             person = info[1]
 
             if 'namen ' in person.lower():
                 person = info[2]
-        
-    line = [path, remove_chars(podiumkunstengezelschap), remove_chars(productietitel), theaterseizoen, person]
+
+    search_term = get_searchterm(remove_chars(productietitel), theaterseizoen)
+    if search_term is not None:
+        if not search_term in identifiers.keys():
+            list_identifiers = find_identifiers_from_csv(search_term)
+            identifiers[search_term] = list_identifiers
+    
+        company_qid = identifiers[search_term]["company_qid"]
+        production_qid = identifiers[search_term]["production_qid"]
+        kunstenpunt_id = identifiers[search_term]["kunstenpunt_id"]
+
+       
+    line = [path, remove_chars(podiumkunstengezelschap), remove_chars(productietitel), 
+    theaterseizoen, person, company_qid, production_qid, kunstenpunt_id]
     write_line(line)
+    
 
 with open('productions.csv', 'w') as output_file:
     writer = csv.writer(output_file)
-    writer.writerow(['path', 'organisatie', 'productie', 'seizoen', 'person'])
+    writer.writerow(['path', 'organisatie', 'productie', 'seizoen', 'persoon', 'gezelschap_QID', 
+    'productie_QID', 'kunstenpunt_ID'])
 output_file.close()
 
+
 with open('data/filenames.csv', 'r') as read_file:
+
+    identifiers = {}
 
     content = csv.DictReader(read_file)
     count = 0
 
     for row in content:
-        print(str(count))
         if row['name'] == 'unknown':
             get_info_from_path(row['image_path'])
         else:
             person = row['name']
             path = row['image_path']
-            line = [path, '', '', '', person]
+            line = [path, '', '', '', person, '', '', '']
             write_line(line)
         count += 1
 
