@@ -35,9 +35,7 @@ def beautify_season(season):
     if season == '':
         return ''
 
-    try:
-        int(season[:2])
-    except:
+    if not season[:2].isdigit():
         return season
 
     if len(season) < 9:
