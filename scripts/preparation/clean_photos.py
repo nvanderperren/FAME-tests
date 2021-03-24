@@ -22,7 +22,7 @@ import csv
 # 4 als controle maken we ook een visualizer foto
 
 cfg = get_cfg()
-treshold = 0.95
+treshold = 0.7
 
 
 # lines bestaat uit: index nr, filename, aantal gezichten
