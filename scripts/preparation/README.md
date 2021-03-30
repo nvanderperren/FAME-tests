@@ -15,7 +15,7 @@ Dit script bekijkt of er 1 of meerdere mensen op een foto staan. Dit script is n
 
 Normaal zou het dan gewoon moeten uitvoeren. Duimen dat er geen fout in zit!
 
-Je kan nog een aanpassing doen, nl. de treshold value aanpassen. Voorlopig staat dit op 0.7. Om dit aan te passen: 
+Je kan nog een aanpassing doen, nl. de treshold value aanpassen. Voorlopig staat dit op 0.7. Om dit aan te passen:
 
 * open je het bestand `scripts/preparation/clean_photos.py`
 * op lijn 25 zie je staan `treshold = 0.7`. Je kan die 0.7 vervangen in een hoger of lager cijfer.
