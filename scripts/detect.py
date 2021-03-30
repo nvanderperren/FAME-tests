@@ -152,11 +152,11 @@ def detecting_faces(csv_file, predictor):
                 print("[INFO] processing face nr. " + str(index_face))
                 (top, right, bottom, left) = face
                 cropped_image = image[top:bottom, left:right]
-                filepath = os.path.join("data/faces", str(index_face) + ".png")
-                save_image(cropped_image, filepath)
+                #filepath = os.path.join("data/faces", str(index_face) + ".png")
+                #save_image(cropped_image, filepath)
                 # plt.imshow(cropped_image)
                 # plt.show()
-                results = [image_path,all_paths[image_path], face, filepath]
+                results = [image_path,all_paths[image_path], face]
                 write_csv(results)
                 index_face = index_face+1
         except:
@@ -187,7 +187,7 @@ def write_csv(line):
 
 def detect_and_crop(csv_file, treshold):
     print("[INFO] Step 1: start detecting faces")
-    csv_header = ['image_path', 'name', 'face_location', 'crop']
+    csv_header = ['image_path', 'name', 'face_location']
     with open("data/found-faces.csv", 'w') as result_file:
         writer = csv.writer(result_file)
         writer.writerow(csv_header)
