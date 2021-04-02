@@ -48,6 +48,25 @@ def list_people(productions, portrets):
     print("[INFO] number of production images: " +
           str(productions))
 
+    '''
+    for image_path in image_paths_portrets:
+        rest = image_path.split('/')
+        rest = rest[rest.index("People")+2:]
+
+        if len(rest) > 1:
+            name = rest[0]
+        if "namen d" in name.lower():
+            name = rest[2]
+        elif "namen" in name.lower():
+            name = rest[1]
+        if name.endswith("_"):
+            name = name[:-1]
+        if not name in names:
+            names.append(name)
+
+        csv_rows.append([image_path, name])
+    '''        
+
     for image_path in image_paths_portrets:
         rest = image_path.split('/')
         if "3_Portretten" in rest:

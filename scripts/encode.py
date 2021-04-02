@@ -61,14 +61,13 @@ def encoding_faces():
             person = row['name']
             face_location_data = row['face_location']
             face_location = get_face_location(face_location_data)
-            cropped_image = row['crop']
             try:
                 cropped_image_data = get_face(image_path, face_location)
                 encoding = utils.img_to_encodings(cropped_image_data)
                 if len(encoding) > 0:
                     resized_image = resize_image(cropped_image_data)
                     face_encoding = embeddable_image(resized_image)
-                    data = [{"image_path": image_path, "name": person, "face_location": face_location, "crop": cropped_image, 
+                    data = [{"image_path": image_path, "name": person, "face_location": face_location,
                     "face_encoding": encoding[0], "image": face_encoding}]
                     lines.extend(data)
             except:

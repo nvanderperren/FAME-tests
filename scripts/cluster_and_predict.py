@@ -21,6 +21,9 @@ from bokeh.plotting import figure, show, output_notebook
 from bokeh.models import HoverTool, ColumnDataSource, CategoricalColorMapper
 from bokeh.palettes import Spectral10, Turbo256, Plasma256, plasma
 
+from PIL import Image
+import os
+
 # imports fuzzy matching
 from fuzzywuzzy import process
 
@@ -128,7 +131,7 @@ def visualise_clusters_image(data, clusterer, labelIDs):
         # find all indexes into the `data` array that belong to the current label ID, then randomly sample a maximum of 25 indexes from the set
         print("[INFO] preparing face ID: {}".format(labelID))
         idxs = np.where(clusterer.labels_ == labelID)[0]
-        idxs = np.random.choice(idxs, size=min(25, len(idxs)), replace=False)
+        #idxs = np.random.choice(idxs, size=min(25, len(idxs)), replace=False)
 
         # initialize the list of faces to include in the montage
         faces = []
@@ -136,10 +139,13 @@ def visualise_clusters_image(data, clusterer, labelIDs):
         # loop over the sampled indexes
         for i in idxs:
             # load the input image and extract the face ROI
+            filepath = os.path.join("data/faces/", str(i) + ".png")
             try:
                 image = cv2.imread(data.at[i, 'image_path'])
                 (top, right, bottom, left) = data.at[i, 'face_location']
                 face = image[top:bottom, left:right]
+                save_image(face, filepath)
+                data.loc[i, 'crop'] = filepath
 
                 # force resize the face ROI to 96x96 and then add it to the faces montage list
                 face = cv2.resize(face, (96, 96))
@@ -161,6 +167,7 @@ def visualise_clusters_image(data, clusterer, labelIDs):
         if labelID == -1:
             filename = 'data/clusters/not_clustered.png'
         plt.imsave(filename, montage)
+        plt.close()
 
 
 def predict(data, clusterer, labelIDs):
@@ -219,11 +226,11 @@ def predict(data, clusterer, labelIDs):
 def calculateNeighbors(data, encodings):
     print("[INFO] calculating neighbours")
     nbrs = NearestNeighbors(
-        n_neighbors=20, algorithm='ball_tree').fit(encodings)
-    distances, indices = nbrs.kneighbors(encodings)
+        n_neighbors=50, algorithm='ball_tree').fit(encodings)
+    distances, neighbor_indices = nbrs.kneighbors(encodings)
     # print(indices, distances)
     '''
-    for i in indices[9]:
+    for i in neighbor_indices[9]:
     person = data.loc[i, 'name'] 
     cluster = data.loc[i, 'HDBSCAN_clusters']
     # print(person, cluster)
@@ -244,7 +251,7 @@ def calculateNeighbors(data, encodings):
     neighbors = []
     umapneighbors = []
     for i, row in data.iterrows():
-        neighbors.append(indices[i].tolist())
+        neighbors.append(neighbor_indices[i].tolist())
         umapneighbors.append(knn_indices[i].tolist())
 
     data['neighbors'] = neighbors
@@ -264,13 +271,21 @@ def calculateNeighbors(data, encodings):
 
     data['cluster_list'] = cluster
 
+def save_image(image, filepath):
+    try:
+        opencvImage = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        PIL_image = Image.fromarray(opencvImage)
+        #plt.imsave(filepath, opencvImage)
+        PIL_image.thumbnail((256,256))
+        PIL_image.save(filepath)
+    except:
+        print("[ERROR] could not save cropped image {}".format(filepath))
 
 def write_data(data):
     data.to_pickle("data/pickle/face-clustering-results.pickle")
-    data = data[['image_path', 'face_location', 'crop',
+    results = data[['image_path', 'face_location', 'crop',
                  'HDBSCAN_clusters', 'cluster_list', 'prediction']]
-    data.to_csv("data/predictions.csv", index=True, index_label='number')
-
+    results.to_csv("data/predictions.csv", index=True, index_label='ID')
 
 # main
 
@@ -283,4 +298,4 @@ def cluster_and_predict():
     write_data(predictions)
 
 
-#cluster_and_predict()
+cluster_and_predict()
