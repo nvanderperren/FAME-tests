@@ -286,8 +286,6 @@ def write_data(data):
     results = data[['image_path', 'face_location', 'crop',
                  'HDBSCAN_clusters', 'cluster_list', 'prediction']]
     results.to_csv("data/predictions.csv", index=True, index_label='ID')
-    labeling = data[['name', 'crop', 'neighbors', 'prediction']]
-    labeling.to_csv("data/labeling.csv", index=True, index_label="ID")    
 
 # main
 
