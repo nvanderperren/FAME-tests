@@ -55,6 +55,8 @@ python3 workflow.py
 
 ### (Optional) Prepare data for labeling tool
 
+(dit stuk moet nog beter uitgewerkt worden)
+
 [EURECA project](https://tw06v072.ugent.be/eureca) is used to validate the results. To set up the labeling tool, some files need to be created. The `scripts/prepare_labeling.py` script creates these files.
 
 Start the script with `python3 scripts/prepare_labeling.py`.
