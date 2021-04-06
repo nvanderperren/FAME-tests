@@ -33,3 +33,21 @@ Het script maak mappen aan in de `data/` map:
 Op al deze foto's zijn, in functie van testing, aangeduid waar het script denkt dat een mens staat + het waarschijnlijkheidspercentage.
 
 Ook zal er een CSV verschijnen in de `data/` folder met als naam `cleanup_portrets.csv`. Hierin vind je een indexnummer (verwijzend naar de nummer van de foto's in de testmap), de originele bestandsnaam en het aantal gezichten dat het script denkt dat er op die foto's staan.
+
+### test_quality_photos.py
+
+Dit script gaat na of de foto's geschikt zijn voor gezichtsherkenning
+
+#### Gebruik
+
+1. Zorg dat je een CSV hebt met alle padnamen van de foto's die je wil testen. In het script wordt er van uitgegaan dat deze CSV `filenames.csv` heet en zich in de hoofdmap van FAME bevindt. Indien gewenst kan je het pad van deze CSV wijzigen in het `test_quality_photos.py` bestand.
+
+   * Ga hiervoor naar lijn 23 van `test_quality_photos.py`
+   * Wijzig het pad achter `input_file: `. Momenteel staat hier `filenames.csv`
+
+2. Start het script via `python3 scripts/preparation/test_quality_photos.py`.
+
+#### Resultaat
+
+Het script maakt de `preparation`-map aan waarin je `kwaliteit.csv` kan vinden. In deze CSV vind je per foto of het beeld gebruikt kan worden in de gezichtsherkenningworkflow.
+
