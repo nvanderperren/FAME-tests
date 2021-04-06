@@ -53,6 +53,14 @@ Then, start the script:
 python3 workflow.py
 ```
 
+### (Optional) Prepare data for labeling tool
+
+[EURECA project](https://tw06v072.ugent.be/eureca) is used to validate the results. To set up the labeling tool, some files need to be created. The `scripts/prepare_labeling.py` script creates these files.
+
+Start the script with `python3 scripts/prepare_labeling.py`.
+
+You'll see that a `data/labeling` folder is created in which you can find two CSV files.
+
 ## Results
 
 You will find:
@@ -61,3 +69,6 @@ You will find:
 2. cropped faces in the `data/faces/` folder
 3. a visualisation of the clusters in the `data/clusters/` folder
 4. a UMAP visualisation (`UMAP_clusters.html`) in the `data/` folder
+5. files needed for the labeling tool:
+   1. `images.csv`: a list of path names, predictions and alike faces of each found person on a photo in the `data/preparation/` folder
+   2. `metadata.csv`: additional metadata per face (cropped image), also in the `data/preparation/` folder

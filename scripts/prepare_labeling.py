@@ -4,8 +4,8 @@ import pandas as pd
 from math import isnan
 import os
 
-input_file = "/Users/nastasia/Downloads/face-clustering-results.pickle"
-descriptive_metadata = "data/kunstenpunt_data.csv"
+input_file = "data/pickle/face-clustering-results.pickle"
+descriptive_metadata = "kunstenpunt_data.csv"
 
 def create_list_metadata(csv_file):
     print("[INFO] creating a list of metadata items")
