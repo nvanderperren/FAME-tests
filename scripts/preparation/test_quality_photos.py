@@ -20,7 +20,7 @@ import csv
 # 4 dit wordt weggeschreven in een CSV
 
 treshold = 0.7
-input_file = "data/filenames.csv"
+input_file = "filenames.csv"
 
 def setup_detection_model(treshold):
     print("[INFO] setting up model...")
@@ -49,7 +49,6 @@ def get_faces(image):
 
     return found_faces
 
-
 def encode_face(face):
     print("[INFO] encoding...")
     encoding = utils.img_to_encodings(face)
@@ -58,7 +57,7 @@ def encode_face(face):
     return ''
 
 def write_csv(lines):
-    with open("kunstenpunt_kwaliteit.csv", 'w') as csv_file:
+    with open("preparation/kwaliteit.csv", 'w') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerows(lines)
     csv_file.close()
@@ -72,6 +71,11 @@ def is_usable(faces, image):
                 return True
     return False
 
+def create_folders():
+    if not os.path.exists("preparation"):
+        os.makedirs("preparation")
+
+create_folders()
 predictor = setup_detection_model(treshold)
 list_photos = pd.read_csv(input_file).values.tolist()
 results = [["path","bruikbaar?"]]
