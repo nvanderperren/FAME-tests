@@ -50,10 +50,17 @@ def crop_faces(out):
     # print(boxes)
     keypoints = localout.pred_keypoints.numpy()
 
-    marge = 100
+    # height, width = shape[0:2] was used to crop out faces relative to height and size of the image. now replaced by size of the detectron boxes
+    #marge_x = width * 0.01
+    #marge_y = 0
+
+    # ander idee voor marge: afstand tussen de twee punten van de boxes gebruiken 
     for i in range(0, n):
 
         x1, y1, x2, y2 = boxes[i]  # bounding box of person
+
+        marge_x = (x2 - x1) * 0.05 
+        marge_y = (y2 - y1) * 0.15
 
         x_nose, y_nose, s_nose = keypoints[i][0]  # nose keypoint
         x_l_ear, y_l_ear, s_l_ear = keypoints[i][3]  # left_ear keypoint
@@ -65,47 +72,47 @@ def crop_faces(out):
 
         # Determine X-values
         if x_r_ear <= x_nose <= x_l_ear:  # nose between ears is front profile of face
-            if x_r_ear - marge > 0:
-                x1 = x_r_ear - marge
+            if x_r_ear - marge_x > 0:
+                x1 = x_r_ear - marge_x
             else:
                 x1 = x_r_ear
-            if x_l_ear + marge < x2:
-                x2 = x_l_ear + marge
+            if x_l_ear + marge_x < x2:
+                x2 = x_l_ear + marge_x
             else:
                 x2 = x_l_ear
 
         elif x_r_ear < x_nose:  # side profil (looking to the right)
-            if x_r_ear - marge > 0:
-                x1 = x_r_ear - marge
+            if x_r_ear - marge_x > 0:
+                x1 = x_r_ear - marge_x
             else:
                 x1 = x_r_ear
-            if x_nose + marge < x2:
-                x2 = x_nose + marge
+            if x_nose + marge_x < x2:
+                x2 = x_nose + marge_x
             else:
                 x2 = x_nose
 
         elif x_nose < x_r_ear:  # side profil (looking to the left)
-            if x_nose - marge > 0:
-                x1 = x_nose - marge
+            if x_nose - marge_x > 0:
+                x1 = x_nose - marge_x
             else:
                 x1 = x_nose
-            if x_r_ear + marge < x2:
-                x2 = x_r_ear + marge
+            if x_r_ear + marge_x < x2:
+                x2 = x_r_ear + marge_x
             else:
                 x2 = x_r_ear
 
         # Determine bottom Y-value
         if s_l_shoulder > 0.05 and s_r_shoulder > 0.05:
             if y_l_shoulder > y_r_shoulder:
-                if y_r_shoulder + marge < y2:
-                    y2 = y_r_shoulder + marge
-                else:
+                if y_r_shoulder + marge_y < y2:
                     y2 = y_r_shoulder
-            else:
-                if y_l_shoulder + marge < y2:
-                    y2 = y_l_shoulder + marge
                 else:
+                    y2 = y_r_shoulder - marge_y
+            else:
+                if y_l_shoulder + marge_y < y2:
                     y2 = y_l_shoulder
+                else:
+                    y2 = y_l_shoulder - marge_y
 
         #cropped_image = image[int(y1):int(y2), int(x1):int(x2)]
         found_faces.append((int(y1), int(x2), int(y2), int(x1)))
@@ -144,6 +151,7 @@ def detecting_faces(csv_file, predictor):
         try:
             image = cv2.imread(image_path)
             # Inference with a keypoint detection model
+            # shape = image.shape
             out = predictor(image)
             faces = crop_faces(out)
             # print(faces)
