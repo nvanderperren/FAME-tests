@@ -9,7 +9,7 @@ from imutils import build_montages
 import matplotlib.pyplot as plt
 import math
 
-# imports clustering
+# imports clustering + visualisation
 import hdbscan
 import umap
 import umap.plot
@@ -53,6 +53,7 @@ def cluster_faces(data):
     predict(data, clusterer, labelIDs)
     visualise_clusters_image(data, clusterer,labelIDs)
     visualise_clusters_umap(data)
+    #visualise_neighbors(data)
     return data
 
 
@@ -138,12 +139,13 @@ def visualise_clusters_image(data, clusterer, labelIDs):
 
         # loop over the sampled indexes
         for i in idxs:
-            # load the input image and extract the face ROI
             filepath = os.path.join("data/faces/", str(i) + ".png")
             try:
+                # load the input image and extract the face ROI
                 image = cv2.imread(data.at[i, 'image_path'])
                 (top, right, bottom, left) = data.at[i, 'face_location']
                 face = image[top:bottom, left:right]
+                # save the cropped image in the faces folder for labeling tool
                 save_image(face, filepath)
                 data.loc[i, 'crop'] = filepath
 
@@ -156,7 +158,7 @@ def visualise_clusters_image(data, clusterer, labelIDs):
             except:
                 print("[ERROR] could not read image {}, skipping...".format(data.at[i, 'image_path']))
 
-        # create a montage using 96x96 "tiles" with 5 rows and 5 columns
+        # create a montage using 96x96 "tiles"
         count_rows = math.ceil(len(faces)/5)
         count_columns = len(faces) if len(faces) < 5 else 5
         montage = build_montages(faces, (96, 96), (count_columns, count_rows))[0]
@@ -169,6 +171,45 @@ def visualise_clusters_image(data, clusterer, labelIDs):
         plt.imsave(filename, montage)
         plt.close()
 
+# method to visualise nearing neighbors
+'''
+def visualise_neighbors(data):
+    print(data)
+    neighbors_list = data['neighbors'].tolist()
+    neighbors_list = set(map(tuple, neighbors_list))
+
+    print(neighbors_list)
+    i = 0
+    for neighbors in neighbors_list:
+        #neighbors.sort()
+        faces = []
+        print(neighbors)
+        for neighbor in neighbors:
+            print(neighbor)
+            
+            try:
+                # load the input image and extract the face ROI
+                face = cv2.imread(data.at[neighbor, 'crop'])
+                # force resize the face ROI to 96x96 and then add it to the faces montage list
+                face = cv2.resize(face, (96, 96))
+                face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+                faces.append(face)
+                #print(data.at[i, 'image_path'])
+            except:
+                print("[ERROR] could not read image {}, skipping...".format(data.at[neighbor, 'crop']))
+    
+        # create a montage using 96x96 "tiles"
+        count_rows = math.ceil(len(faces)/10)
+        count_columns = len(faces) if len(faces) < 10 else 10
+        montage = build_montages(faces, (96, 96), (count_columns, count_rows))[0]
+
+        fig = plt.figure(figsize=(20, 30))
+        # plt.imshow(montage)
+        filename = 'data/neighbors/group_' + str(i) + '.png'
+        plt.imsave(filename, montage)
+        plt.close()
+        i += 1
+'''
 
 def predict(data, clusterer, labelIDs):
     print("[INFO] predicting persons")
@@ -284,7 +325,7 @@ def save_image(image, filepath):
 def write_data(data):
     data.to_pickle("data/pickle/face-clustering-results.pickle")
     results = data[['image_path', 'face_location', 'crop',
-                 'HDBSCAN_clusters', 'cluster_list', 'prediction']]
+                 'HDBSCAN_clusters', 'cluster_list', 'neighbors', 'prediction']]
     results.to_csv("data/predictions.csv", index=True, index_label='ID')
 
 # main
@@ -298,4 +339,4 @@ def cluster_and_predict():
     write_data(predictions)
 
 
-cluster_and_predict()
+#cluster_and_predict()
