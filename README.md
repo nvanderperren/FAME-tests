@@ -25,19 +25,6 @@ The script `preparations_KP.py` creates this CSV for the Kunstenpunt images.
 2. add portret and production folders in the `production_dirs` and `portret_dirs` variables in `preparations_KP.py`
 3. start the script: `python3 preparations_KP.py`
 
-### (Optional) Get extra metadata of path names (Kunstenpunt only)
-
-The script needs:
-
-* a CSV with columns _image path_ (= absolute path of image) and _name_ (name of person on picture or unknown);
-* a CSV with the QID of the production company, QID of the production and the Kunstenpunt ID of the production. You can find this file `identifiers_KP.csv` in this repository.
-
-You can adjust some parameters in `scripts/get_info_from_path.py`:
-
-1. OUTPUT_FILENAME: the filename of the resulting csv file, now `kunstenpunt_data.csv`
-2. IDENTIFIERS_CSV: the name of the csv with the identifiers, now `identifiers_KP.csv`
-3. FILENAME_CSV: is now `data/filenames.csv`, which is created in first step
-
 ### Start the workflow
 
 The workflow needs a CSV with columns _image path_ (= absolute path of image) and _name_ (name of person on picture or unknown).
@@ -71,6 +58,6 @@ You will find:
 2. cropped faces in the `data/faces/` folder
 3. a visualisation of the clusters in the `data/clusters/` folder
 4. a UMAP visualisation (`UMAP_clusters.html`) in the `data/` folder
-5. files needed for the labeling tool:
-   1. `images.csv`: a list of path names, predictions and alike faces of each found person on a photo in the `data/preparation/` folder
-   2. `metadata.csv`: additional metadata per face (cropped image), also in the `data/preparation/` folder
+5. files needed for the labeling tool in the `data/labeling/` folder:
+   1. `images.csv`: a list with face ID, path of cropped image, predictions and alike faces of each found face 
+   2. `metadata.csv`: additional metadata per face (cropped image)
