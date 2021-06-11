@@ -60,7 +60,7 @@ def crop_faces(out):
         x1, y1, x2, y2 = boxes[i]  # bounding box of person
 
         marge_x = (x2 - x1) * 0.05 
-        marge_y = (y2 - y1) * 0.15
+        marge_y = (y2 - y1) * 0.05
 
         x_nose, y_nose, s_nose = keypoints[i][0]  # nose keypoint
         x_l_ear, y_l_ear, s_l_ear = keypoints[i][3]  # left_ear keypoint
