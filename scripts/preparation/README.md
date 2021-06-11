@@ -50,3 +50,7 @@ Dit script gaat na of de foto's geschikt zijn voor gezichtsherkenning
 #### Resultaat
 
 Het script maakt de `preparation`-map aan waarin je `kwaliteit.csv` kan vinden. In deze CSV vind je per foto of het beeld gebruikt kan worden in de gezichtsherkenningworkflow.
+
+### get_info_from_path.py (deprecated) 
+
+Dit script haalde extra metadata uit de padnamen van de bestanden van Kunstenpunt. Sinds de cleaning van deze data is dit script niet meer nuttig.
