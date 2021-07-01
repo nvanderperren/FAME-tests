@@ -9,15 +9,19 @@ output_dir = argv[2]
 imdb = IMDb()
 
 def get_image(code):
-    id = code[2:]
+    if not code.isdigit():
+        id = code[2:]
+    else:
+        id = code
     person = imdb.get_person(id)
     name = person['name']
     image = None
     try:
         image = person['full-size headshot']
-        print("{} has an image".format(name))
     except:
         print("{} has no image".format(name))
+    finally:
+        print("{} has an image".format(name))
     return image
 
 def download_image(url, filename):
