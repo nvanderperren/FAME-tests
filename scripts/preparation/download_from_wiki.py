@@ -2,8 +2,8 @@ import os
 import csv
 from sys import argv
 
-metadata = argv[1]
-output_dir = argv[2]
+metadata=argv[1] # csv with columns 'afbeelding' and 'QID'
+output_dir=argv[2] # absolute path to folder for storing all images
 
 def get_filename(qid, image):
     extension = get_extension(image)
@@ -20,14 +20,24 @@ def get_extension(file):
     else:
         return '.png'
 
-with open(metadata, 'r') as input_file:
-    reader = csv.DictReader(input_file)
-    os.chdir(output_dir)
-    for row in reader:
-        afbeelding = row['afbeelding']
-        filename = get_filename(row['QID'], afbeelding)
-        command = 'wikiget \"{}\" -o {}'.format(afbeelding, filename)
-        print(command)
-        os.system(command)
-    input_file.close()
+def create_folder(folder):
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    return folder
 
+def start(metadata, output_dir):
+    with open(metadata, 'r') as input_file:
+        reader = csv.DictReader(input_file)
+        for row in reader:
+            os.chdir(output_dir)
+            image = row['image']
+            if not image == '':
+                os.chdir(create_folder(row['QID']))
+                #filename = get_filename(row['QID'], image)
+                #command = 'wikiget \"{}\" -o {}'.format(afbeelding,filename)
+                command = 'wikiget \"{}\"'.format(image)
+                print(command)
+                os.system(command)
+        input_file.close()
+
+start(metadata, output_dir)
