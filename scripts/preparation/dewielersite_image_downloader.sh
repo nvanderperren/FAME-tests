@@ -1,3 +1,6 @@
+#!/bin/bash
+# author: Nastasia Vanderperren (meemoo)
+
 ID=$1 # cycling archives ID of the coureur
 QID=$2 # QID of the coureur
 WIELERSITE=http://www.dewielersite.net/db2/wielersite/coureurfiche.php?coureurid=${ID}
