@@ -6,11 +6,12 @@ echo "Downloading coureur page"
 wget $WIELERSITE
 
 echo "Extracting image links"
-WIELERSITE_LINKS=`grep beeldbank coureurfiche.php\?coureurid\=$ID | sed 's/^.*a href=//'| sed 's/^.*img src=//'| cut -d " " -f 1 | sed 's/^.\(.*\).$/\1/'` 
-echo ${WIELERSITE_LINKS}
+WIELERSITE_LINKS=`grep beeldbank coureurfiche.php\?coureurid\=$ID | sed 's/^.*a href=//'| sed 's/^.*img src=//'| cut -d \" -f 2`
+LINKS=${WIELERSITE_LINKS// /%20}
+#echo $LINKS
 
 echo "Downloading Images"
-wget -nc -w 1 -e robots=off -P "${QID}" ${WIELERSITE_LINKS:1:-1}
+wget -nc -w 1 -e robots=off -P ${QID} ${LINKS}
 
 echo "Cleaning up temp files"
 rm coureurfiche*
