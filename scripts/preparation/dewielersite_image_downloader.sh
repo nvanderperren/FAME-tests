@@ -9,7 +9,7 @@ echo "Downloading coureur page"
 wget $WIELERSITE
 
 echo "Extracting image links"
-WIELERSITE_LINKS=`grep beeldbank coureurfiche.php\?coureurid\=$ID | sed 's/^.*a href=//'| sed 's/^.*img src=//'| cut -d \" -f 2`
+WIELERSITE_LINKS=`grep beeldbank coureurfiche.php\?coureurid\=$ID | sed 's/^.*img src=//'| cut -d \" -f 2`
 LINKS=${WIELERSITE_LINKS// /%20}
 #echo $LINKS
 
