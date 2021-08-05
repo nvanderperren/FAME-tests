@@ -15,6 +15,7 @@ LINKS=${WIELERSITE_LINKS// /%20}
 
 if [ ! -z $LINKS ]
 then
+    echo "[INFO] Downloading images"
     wget -nc -w 1 -e robots=off -P ${QID} ${LINKS}
 else
     echo "[INFO] No image links to extract"
