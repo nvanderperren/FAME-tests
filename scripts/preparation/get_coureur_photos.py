@@ -10,29 +10,31 @@ PROCYCLINGSTATS = 'procyclingstats'
 
 # could be more DRY
 
-def download_images_cyclingarchives(reader):
-    for row in reader:
-        cycling_id = row[CYCLINGARCHIVES]
-        qid = row['QID']
-        if not cycling_id == '':
-            run(["dewielersite_image_downloader.sh", cycling_id, qid], shell=True)
+def download_images_cyclingarchives(cycling_id, output_folder):
+    if not cycling_id == '':
+        #print(cycling_id)
+        run(["/Users/nastasia/Developer/image_recognition/FAME-tests/scripts/preparation/dewielersite_image_downloader.sh", cycling_id, output_folder])
 
-def download_images_procyclingstats(reader):
-    for row in reader:
-        cycling_id = row[PROCYCLINGSTATS]
-        qid = row['QID']
-        if not cycling_id == '':
-            run(["procyclingstats_image_downloader.sh", cycling_id, qid], shell=True)                 
+def download_images_procyclingstats(cycling_id, output_folder):
+    if not cycling_id == '':
+        run(["/Users/nastasia/Developer/image_recognition/FAME-tests/scripts/preparation/procyclingstats_image_downloader.sh", cycling_id, output_folder])                 
 
 
-def start(metadata, output_dir):
-    os.chdir(output_dir)       
+def start(metadata, output_dir):       
     with open(metadata, 'r') as input_file:
         reader = csv.DictReader(input_file)
-        if CYCLINGARCHIVES in reader.fieldnames:
-            download_images_cyclingarchives(CYCLINGARCHIVES, reader)
-        if PROCYCLINGSTATS in reader.fieldnames:
-            download_images_procyclingstats(PROCYCLINGSTATS, reader)
+        for row in reader:
+            qid = row['QID']
+            output_folder = '{}/{}'.format(output_dir, qid)
+            #print(output_folder)
+            if CYCLINGARCHIVES in reader.fieldnames:
+                cycling_id = row['cyclingarchives']
+                #print(cycling_id)
+                download_images_cyclingarchives(cycling_id, output_folder)
+            if PROCYCLINGSTATS in reader.fieldnames:
+                cycling_id = row['procyclingstats']
+                #print(cycling_id)
+            #    download_images_procyclingstats(cycling_id, output_folder)
 
         input_file.close()
 

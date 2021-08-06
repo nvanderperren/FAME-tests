@@ -2,7 +2,7 @@
 # author: Nastasia Vanderperren (meemoo)
 
 ID=$1 # cycling archives ID of the coureur
-QID=$2 # QID of the coureur
+OUTPUT_FOLDER=$2 # QID of the coureur
 WIELERSITE=https://www.procyclingstats.com/rider/${ID}/statistics
 
 echo "[INFO]  Downloading coureur page"
@@ -16,7 +16,7 @@ LINKS=${WIELERSITE_LINKS// /%20}
 if [ ! -z $LINKS ]
 then
     echo "[INFO] Downloading images"
-    wget -nc -w 1 -e robots=off -P ${QID} ${LINKS}
+    wget -nc -w 1 -e robots=off -P ${OUTPUT_FOLDER} ${LINKS}
 else
     echo "[INFO] No image links to extract"
 fi
