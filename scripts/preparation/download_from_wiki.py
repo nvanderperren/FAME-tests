@@ -2,7 +2,7 @@ import os
 import csv
 from sys import argv
 
-metadata=argv[1] # csv with columns 'afbeelding' and 'QID'
+metadata=argv[1] # csv with columns 'image' and 'QID'
 output_dir=argv[2] # absolute path to folder for storing all images
 
 def get_filename(qid, image):

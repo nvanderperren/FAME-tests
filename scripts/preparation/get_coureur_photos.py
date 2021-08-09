@@ -34,7 +34,7 @@ def start(metadata, output_dir):
             if PROCYCLINGSTATS in reader.fieldnames:
                 cycling_id = row['procyclingstats']
                 #print(cycling_id)
-            #    download_images_procyclingstats(cycling_id, output_folder)
+                download_images_procyclingstats(cycling_id, output_folder)
 
         input_file.close()
 
