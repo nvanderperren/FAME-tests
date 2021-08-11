@@ -1,7 +1,7 @@
 # Installation software (macOS)
 
 * detecting faces: detectron2
-* encoding faces: face_recognition
+* encoding faces: pyfacy
 * visualisation: UMAP
 * clustring: sklearn
 * HDBSCAN
