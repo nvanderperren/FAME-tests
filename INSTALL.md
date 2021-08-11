@@ -3,8 +3,7 @@
 * detecting faces: detectron2
 * encoding faces: pyfacy
 * visualisation: UMAP
-* clustring: sklearn
-* HDBSCAN
+* cluster: sklearn and HDBSCAN
 
 ## general requirements
 
