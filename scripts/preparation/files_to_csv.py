@@ -3,8 +3,9 @@ import csv
 import pandas as pd
 from sys import argv
 
-folder=argv[1]
-csv_file=argv[2]
+folder=argv[2]
+csv_file=argv[1]
+output=argv[3]
 data = {}
 files = [["path", "name", "QID"]]
 
@@ -16,12 +17,15 @@ def load_data(csv_file):
     input_file.close()
 
 def get_person(QID):
-    name = data[QID]
+    try:
+        name = data[QID]
+    except:
+        name = "ONTBREEKT"
     print(name)
     return name
 
 def write_csv(lines):
-    output_csv = open('data/prep_KP/portrets.csv', 'w')
+    output_csv = open(output, 'w')
     writer = csv.writer(output_csv)
     writer.writerows(lines)
 
@@ -33,7 +37,10 @@ for filepath in listdir(folder):
     parent = path.join(parent_folder, filepath)
     #print(parent)
     if path.isdir(path.join(folder, filepath)):
-        QID = filepath
+        if filepath.endswith('_2'):
+            QID = filepath[:-2]
+        else:
+            QID = filepath
         #print(QID)
         name = get_person(QID)
         for file in listdir(path.join(folder, filepath)):

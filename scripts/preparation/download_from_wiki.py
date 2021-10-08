@@ -28,14 +28,15 @@ def create_folder(folder):
 def start(metadata, output_dir):
     with open(metadata, 'r') as input_file:
         reader = csv.DictReader(input_file)
+        os.chdir(output_dir)
         for row in reader:
-            os.chdir(output_dir)
+            #os.chdir(output_dir)
             image = row['image']
             if not image == '':
-                os.chdir(create_folder(row['QID']))
-                #filename = get_filename(row['QID'], image)
-                #command = 'wikiget \"{}\" -o {}'.format(afbeelding,filename)
-                command = 'wikiget \"{}\"'.format(image)
+                #os.chdir(create_folder(row['QID']))
+                filename = get_filename(row['QID'], image)
+                command = 'wikiget \"{}\" -o {}'.format(image,filename)
+                #command = 'wikiget \"{}\"'.format(image)
                 print(command)
                 os.system(command)
         input_file.close()
