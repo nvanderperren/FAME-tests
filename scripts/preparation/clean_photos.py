@@ -12,6 +12,8 @@ import cv2
 import pandas as pd
 import os
 import csv
+from sys import argv
+
 
 
 
@@ -25,6 +27,7 @@ import csv
 
 cfg = get_cfg()
 treshold = 0.7
+files = argv[1]
 
 
 # lines bestaat uit: index nr, filename, aantal gezichten
@@ -84,8 +87,10 @@ def is_portret(predictor, index, photo):
     return False
 
 predictor = setup_detection_model(treshold)
-list_photos = pd.read_csv("portrets.csv").values.tolist()
+list_photos = pd.read_csv(files).values.tolist()
+print(list_photos)
 for index, photo in enumerate(list_photos):
+    print(photo)
     filename = photo[0].split("/")[-1]
     if is_portret(predictor, index, photo[0]):
         print("{} is a portret".format(filename))

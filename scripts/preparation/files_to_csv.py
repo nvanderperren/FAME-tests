@@ -2,12 +2,14 @@ from os import path, listdir
 import csv
 import pandas as pd
 from sys import argv
+from glob import glob
 
 folder=argv[2]
 csv_file=argv[1]
 output=argv[3]
 data = {}
 files = [["path", "name", "QID"]]
+ends = ("_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8", "_9", "_vrt", "_wikimedia", "_ODIS")
 
 def load_data(csv_file):
     input_file = open(csv_file, 'r')
@@ -37,8 +39,8 @@ for filepath in listdir(folder):
     parent = path.join(parent_folder, filepath)
     #print(parent)
     if path.isdir(path.join(folder, filepath)):
-        if filepath.endswith('_2'):
-            QID = filepath[:-2]
+        if filepath.endswith(ends):
+            QID = filepath.rsplit('_', 1)[0]
         else:
             QID = filepath
         #print(QID)
