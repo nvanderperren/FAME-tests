@@ -74,16 +74,16 @@ def is_portret(predictor, index, photo):
     
     if  count_instances == 1:
         print("one instance found on " + str(photo))
-        cv2.imwrite("data/test/portrets/" + str(index) + ".jpg", v.get_image())
+        cv2.imwrite("data/test/portrets/" + str(index) + ".tif", v.get_image())
         return True
 
     elif count_instances == 0:
         print("zero instances found on " + str(photo))
-        cv2.imwrite("data/test/empty/" + str(index) + ".jpg", v.get_image())
+        cv2.imwrite("data/test/empty/" + str(index) + ".tif", v.get_image())
         return False
 
     print("multiple instances found on " + str(photo))
-    cv2.imwrite("data/test/group/" + str(index) + ".jpg", v.get_image())
+    cv2.imwrite("data/test/group/" + str(index) + ".tif", v.get_image())
     return False
 
 predictor = setup_detection_model(treshold)
