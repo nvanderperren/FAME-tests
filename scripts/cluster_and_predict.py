@@ -266,8 +266,13 @@ def predict(data, clusterer, labelIDs):
 
 def calculateNeighbors(data, encodings):
     print("[INFO] calculating neighbours")
-    nbrs = NearestNeighbors(
-        n_neighbors=50, algorithm='ball_tree').fit(encodings)
+    max_neighbors = int(data.shape[0])
+    if max_neighbors > 50:
+        nbrs = NearestNeighbors(
+            n_neighbors=50, algorithm='ball_tree').fit(encodings)
+    else:
+        nbrs = NearestNeighbors(
+            n_neighbors=max_neighbors, algorithm='ball_tree').fit(encodings)
     distances, neighbor_indices = nbrs.kneighbors(encodings)
     # print(indices, distances)
     '''
