@@ -8,7 +8,7 @@ Scripts geschreven in het kader van het FAME-project voor het opbouwen van refer
 
 ### download_from_wiki.py
 
-Dit script download de afbeelding die aanwezig is in een wikidatarecord (_P18 has image_)
+Dit script downloadt de afbeelding die aanwezig is in een wikidatarecord (_P18 has image_)
 
 #### Vereisten
 
