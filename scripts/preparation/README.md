@@ -1,8 +1,56 @@
-# FAME-tests
-
-## Preparation scripts
+# Preparation scripts
 
 Enkele scripts om te zorgen voor betere metadata en trainingsmateriaal.
+
+## Opbouwen referentiesets
+
+Scripts geschreven in het kader van het FAME-project voor het opbouwen van referetiesets
+
+### download_from_wiki.py
+
+Dit script download de afbeelding die aanwezig is in een wikidatarecord (_P18 has image_)
+
+#### Vereisten
+
+* [wikiget](https://github.com/clpo13/wikiget) is geïnstalleerd via `pip3 install --user wikiget`.
+
+#### Gebruik
+
+1. zorg dat je een CSV hebt met minstens de kolommen _QID_ en _image_. In de kolom QID staat het QID van de persoon, in _image_ de afbeelding.
+2. start het script via `python3 scipts/preparation/download_from_wiki.py path_naar_csv_uit_stap_1 path_naar_output_map` 
+
+#### Resultaat
+
+In de gewenste outputmap zitten de gedownloadde afbeelding. De bestandsnaam van de afbeelding is steeds het QID.
+
+### get_coureur_photos.py
+
+Dit script werd gebruikt om de referentiesets voor wielrenners uit te breiden. Het stuurt drie shell scripts aan die foto's scrapen van _!!! de Wielersite !!!_, _Procyclingstats_ en _Wikimedia Commons_.
+
+#### Vereisten
+
+* een CSV met:
+  * een kolom QID voor de QID van de wielrenner (verplicht);
+  * een kolom _cyclingarchives_ met daarin het [Cycling Archives cyclist ID](https://www.wikidata.org/wiki/Property:P1409) van de wielrenner als je afbeeldingen van [!!! De Wielersite !!!](http://www.dewielersite.net/db2/wielersite/index.php) wil ophalen (optioneel);
+  * een kolom _procyclingstats_ met daarin het [ProCyclingStats cyclist ID](https://www.wikidata.org/wiki/Property:P1663) van de wielerenner als je afbeeldingen van [ProCyclingStats](https://www.procyclingstats.com/) wil ophalen (optioneel);
+  * een kolom _commons_ met daarin de naam van de [commons categorie](https://www.wikidata.org/wiki/Property:P373) voor de wielrenner waarvan je afbeeldingen wil ophalen (optioneel).
+* de aanwezigheid van de scripts `commons_category_downloader.sh`, `dewielersite_image_downloader.sh` en `procyclingstats_image_downloader.sh` in dezelfde map als `get_coureur_photos.py`.
+
+#### Gebruik
+
+1. zorg dat je een CSV hebt met de kolommen zoals uitgelegd onder _Vereisten_.
+2. start het script met `python3 get_coureur_photos.py path_van_csv path_van_output_folder` 
+3. het script zal nu lijn voor lijn de CSV lezen. Als een van de kolommen van de websites aanwezig is en deze een identifier bevat, dan zal een script in werking gezet worden om de foto's van de wielrenner op de betreffende webste te scrapen. 
+
+__Let op!__ het zijn redelijk inefficiënte scripts, waardoor het even kan duren. 
+
+Hoe verloopt het under the hood? Via de identifier zal de webpagina van deze wielrenner gedownload worden. Vervolgens wordt gezocht naar de URL's van de afbeeldingen. Deze worden vervolgens één voor één gedownload en in de outputfolder gestopt. Daarna worden de gedownloade HTML-pagina's verwijderd.
+
+#### Resultaat
+
+In de outputfolder bevindt zich een map met het QID van de wielrenner. In deze map bevinden zich alle foto's die gescrapet werden van deze persoon.
+
+## Kwaliteitscheck
 
 ### clean_photos.py
 
