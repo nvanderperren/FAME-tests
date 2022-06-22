@@ -14,11 +14,11 @@ COMMONS = 'commons'
 def download_images_cyclingarchives(cycling_id, output_folder):
     if not cycling_id == '':
         #print(cycling_id)
-        run(["/Users/nastasia/Developer/image_recognition/FAME-tests/scripts/preparation/dewielersite_image_downloader.sh", cycling_id, output_folder])
+        run(["scripts/preparation/dewielersite_image_downloader.sh", cycling_id, output_folder])
 
 def download_images_procyclingstats(cycling_id, output_folder):
     if not cycling_id == '':
-        run(["/Users/nastasia/Developer/image_recognition/FAME-tests/scripts/preparation/procyclingstats_image_downloader.sh", cycling_id, output_folder])
+        run(["scripts/preparation/procyclingstats_image_downloader.sh", cycling_id, output_folder])
 
 def download_images_commons(commons_id, output_folder):
     if not commons_id == '':
