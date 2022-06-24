@@ -3,7 +3,6 @@
 
 CSV=$1 # input csv with columns qid,name,cyclingarchives_id; header is required
 OUTPUT_FOLDER=$2 # folder where you want all images to be stored
-WIELERSITE=http://www.dewielersite.net/db2/wielersite/coureurfiche.php?coureurid=${ID}
 
 while IFS="," read -r qid name cyclingarchives_id
 do
@@ -33,7 +32,7 @@ do
 
         echo "[INFO] Cleaning up temp files"
         rm coureurfiche*
-        echo "Done"
+        echo -e "Done\n"
 
     fi
 
