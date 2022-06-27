@@ -1,4 +1,5 @@
 #!/bin/bash
+# author: Nastasia Vanderperren (meemoo)
 
 CATEGORY=$1
 FOLDER=$2
