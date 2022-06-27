@@ -4,6 +4,7 @@
 CSV=$1
 OUTPUT_FOLDER=$2
 
+tail -n +2 ${CSV} | \
 while IFS="," read -r qid name category
 do
 	if [[ -n $category ]]
@@ -25,19 +26,18 @@ do
 
 		if [[ -n $WIKI_LINKS ]]
 		then
+			echo $WIKI_LINKS
 			echo "Downloading Images of $WIKI_URL"
-			wget -q -nc -w 1 -e robots=off -P "${folder}" "${WIKI_LINKS}"
+			wget -nc -w 1 -e robots=off -P "${folder}" ${WIKI_LINKS}
 			echo "[INFO] Files saved in ${folder}"
 		else
 			echo "[INFO] Commons page of $name has no images"
 		fi
 
+		echo "Cleaning up temp files"
+		rm -rf commons.wikimedia.org/
 		echo -e "Done\n"
 
 	fi
 
-done < <(tail -n +2 ${CSV})
-
-echo "Cleaning up temp files"
-rm -rf commons.wikimedia.org/
-echo -e "Done\n"
+done
