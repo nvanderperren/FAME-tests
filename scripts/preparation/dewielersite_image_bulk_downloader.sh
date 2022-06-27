@@ -4,6 +4,7 @@
 CSV=$1 # input csv with columns qid,name,cyclingarchives_id; header is required
 OUTPUT_FOLDER=$2 # folder where you want all images to be stored
 
+tail -n +2 ${CSV} | \
 while IFS="," read -r qid name cyclingarchives_id
 do
 
@@ -36,5 +37,5 @@ do
 
     fi
 
-done < <(tail -n +2 ${CSV})
+done
 
