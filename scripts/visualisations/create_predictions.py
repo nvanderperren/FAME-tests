@@ -5,7 +5,7 @@ import pandas as pd
 
 
 treshold = 0.7
-files = argv[1]
+files = argv[1] # csv containing filenames
 
 def create_prediction_image(photo):
     filename = photo.split("/")[-1]
